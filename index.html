@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Systems Map</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e17;color:#e2e8f0;font-family:'Helvetica Neue',system-ui,sans-serif;min-height:100vh;padding:16px;max-width:600px;margin:0 auto;-webkit-font-smoothing:antialiased}
+.hdr{text-align:center;margin-bottom:20px}
+.hdr .k{font-size:10px;color:#f59e0b;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;font-weight:600}
+.hdr h1{font-size:20px;font-weight:700;margin:0}
+.hdr .sub{font-size:10px;color:#64748b;margin-top:4px;font-style:italic}
+.scr{display:none;padding-bottom:20px}.scr.on{display:block}
+.grid{display:flex;flex-direction:column;gap:6px}
+.ebtn{background:#111827;border:1px solid #1e293b;border-radius:10px;padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent;margin-bottom:6px}
+.ebtn:active{opacity:.7}
+.eico{font-size:18px;width:28px;text-align:center;flex-shrink:0}
+.enm{font-size:13px;font-weight:600;color:#e2e8f0}
+.eds{font-size:10px;color:#64748b;margin-top:2px;line-height:1.4}
+.bk{background:none;border:none;color:#64748b;font-size:12px;cursor:pointer;padding:6px 0;margin-bottom:12px;font-family:inherit}
+.sec{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid #1e293b}
+.crd{background:#111827;border:1px solid #1e293b;border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.crd:active{opacity:.8}
+.crd-h{display:flex;justify-content:space-between;align-items:center}
+.crd-t{font-size:13px;font-weight:600}
+.crd-s{font-size:10px;color:#64748b;margin-top:2px}
+.chv{font-size:10px;color:#64748b;transition:transform .2s}
+.crd.open .chv{transform:rotate(180deg)}
+.crd-b{display:none;margin-top:10px;font-size:12px;color:#94a3b8;line-height:1.6}
+.crd.open .crd-b{display:block}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.val{font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:8px}
+.pill{font-size:10px;padding:3px 8px;border-radius:4px;font-weight:600;display:inline-block;margin:2px}
+.alert-box{border-radius:8px;padding:12px 14px;margin-bottom:10px;font-size:12px;line-height:1.6}
+.tl-item{font-size:12px;color:#94a3b8;padding:8px 0 8px 14px;border-left:2px solid;line-height:1.5;margin-bottom:2px}
+.tl-yr{font-size:11px;font-weight:700;letter-spacing:1px;margin:12px 0 4px;font-family:monospace}
+.task{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:8px}
+.task.done{opacity:.4}
+.chkb{width:18px;height:18px;min-width:18px;border-radius:4px;border:2px solid #64748b;background:transparent;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#0a0e17;font-size:11px;font-weight:700}
+.task-tx{font-size:12px;line-height:1.5;color:#94a3b8}
+.task.done .task-tx{color:#64748b;text-decoration:line-through}
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.id-cell{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:7px 10px}
+.id-k{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.id-v{font-size:12px;font-weight:600;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="hdr" id="mhdr">
+  <h1 style="color:#f59e0b;font-size:24px;letter-spacing:2px">SYSTEMS MAP</h1>
+  <div style="font-size:9px;color:#64748b;margin-top:3px">Last updated: 19 April 2026</div>
+  <div class="sub">4w5 · INFJ · SX/SO · SP blind · High-gain · Exit: Nov 1, 2026</div>
+</div>
+
+<div class="scr on" id="s-home">
+  <div class="grid">
+    <div class="ebtn" onclick="go('s-me')" style="border-left:3px solid #f59e0b"><div class="eico">&#9670;</div><div><div class="enm">Who I am</div><div class="eds">Identity, stack, origin, vulnerability, evidence</div></div></div>
+    <div class="ebtn" onclick="go('s-sys')" style="border-left:3px solid #f59e0b"><div class="eico">&#9878;</div><div><div class="enm">The system</div><div class="eds">Diagram, people, relationships, abuse verdict</div></div></div>
+    <div class="ebtn" onclick="go('s-health')" style="border-left:3px solid #ef4444"><div class="eico">&#9829;</div><div><div class="enm">Health + risk</div><div class="eds">Cardiovascular, medication, fitness, what the data shows</div></div></div>
+    <div class="ebtn" onclick="go('s-wnd')" style="border-left:3px solid #f472b6"><div class="eico">&#9632;</div><div><div class="enm">Wounds + shadow</div><div class="eds">10 wounds, shadow charges, autobiography</div></div></div>
+    <div class="ebtn" onclick="go('s-lps')" style="border-left:3px solid #ef4444"><div class="eico">&#8635;</div><div><div class="enm">The loops</div><div class="eds">Psychosis loop, reinforcing, balancing, exit loop</div></div></div>
+    <div class="ebtn" onclick="go('s-pln')" style="border-left:3px solid #10b981"><div class="eico">&#9654;</div><div><div class="enm">The plan</div><div class="eds">Phases, leverage, failure points, tasks</div></div></div>
+    <div class="ebtn" onclick="go('s-rul')" style="border-left:3px solid #ef4444"><div class="eico">&#9888;</div><div><div class="enm">Non-negotiable</div><div class="eds">Rules, dopamine chain, suspicions</div></div></div>
+  </div>
+</div>
+
+<div class="scr" id="s-sys"></div>
+<div class="scr" id="s-sys-ppl"></div>
+<div class="scr" id="s-sys-rel"></div>
+<div class="scr" id="s-sys-abuse"></div>
+<div class="scr" id="s-sys-dia"></div>
+<div class="scr" id="s-sys-abuse-rank"></div>
+<div class="scr" id="s-sys-abuse-notes"></div>
+<div class="scr" id="s-me"></div>
+<div class="scr" id="s-me-id"></div>
+<div class="scr" id="s-me-origin"></div>
+<div class="scr" id="s-me-comp"></div>
+<div class="scr" id="s-me-tl"></div>
+<div class="scr" id="s-health"></div>
+<div class="scr" id="s-health-num"></div>
+<div class="scr" id="s-health-risk"></div>
+<div class="scr" id="s-health-med"></div>
+<div class="scr" id="s-health-fit"></div>
+<div class="scr" id="s-wnd"></div>
+<div class="scr" id="s-wnd-core"></div>
+<div class="scr" id="s-wnd-shadow"></div>
+<div class="scr" id="s-wnd-auto"></div>
+<div class="scr" id="s-lps"></div>
+<div class="scr" id="s-lps-psych"></div>
+<div class="scr" id="s-lps-reinf"></div>
+<div class="scr" id="s-lps-bal"></div>
+<div class="scr" id="s-lps-exit"></div>
+<div class="scr" id="s-pln"></div>
+<div class="scr" id="s-pln-phases"></div>
+<div class="scr" id="s-pln-lev"></div>
+<div class="scr" id="s-pln-fail"></div>
+<div class="scr" id="s-pln-tasks"></div>
+<div class="scr" id="s-pln-tasks-now"></div>
+<div class="scr" id="s-pln-tasks-build"></div>
+<div class="scr" id="s-pln-tasks-exit"></div>
+<div class="scr" id="s-pln-tasks-post"></div>
+<div class="scr" id="s-rul"></div>
+<div class="scr" id="s-rul-rules"></div>
+<div class="scr" id="s-rul-susp"></div>
+
+<script>
+const C={accent:'#f59e0b',accentDim:'#78350f',green:'#10b981',greenDim:'#064e3b',red:'#ef4444',redDim:'#7f1d1d',blue:'#3b82f6',blueDim:'#1e3a5f',purple:'#a78bfa',purpleDim:'#4c1d95',pink:'#f472b6',pinkDim:'#831843',text:'#e2e8f0',textDim:'#94a3b8',muted:'#64748b'};
+
+// ===== DATA =====
+const myHistory={
+  identity:{name:'You',dob:'Nov 18, 1990',type:'4w5 · INFJ',role:'System Architect',status:'Map complete · AD filing this week · Exit: Nov 1, 2026'},
+  origin:{
+    title:'THE ORIGIN — FATHER\'S ALCOHOLISM + MOTHER\'S POSITION',
+    text:'Your father was a heavy alcoholic who died of alcoholic liver disease in 2014. He promised your mother a good life but gave her pain, abuse, and betrayal — took all her money, repeatedly cheated (first affair with colleague, later falsely accused mom of affair with subordinate causing her suicide attempt), abused her while her family was away. She never told them. You have a genetic predisposition to substance dependence. Psychiatric loading beyond addiction: aunt has schizophrenia, grandfather\'s sister has schizophrenia. Your mother holds the structural position — finances, house, moral authority — but pretends to see you while looking down. Finances, house, moral authority all concentrate in her. Everyone orbits her because she holds the money and everyone wants her validation. She opposes sister\'s wrong thinking. But information flows through her poorly — she hides, omits, avoids. She constructed a founding myth from an elopement her family actually embraced. The system was shaped by father\'s alcoholism. The architecture that remains was shaped by mother\'s position.',
+    color:C.purple
+  },
+  vulnerability:{
+    title:'SUBSTANCE + PSYCHIATRIC VULNERABILITY',
+    text:'4 episodes of cannabis-induced psychosis (2017, 2019, 2023, 2024). Near-zero threshold. High-gain nervous system. Genetic loading: father — alcoholic liver disease (addiction), aunt — schizophrenia, grandfather\'s sister — schizophrenia. Psychiatric vulnerability on multiple axes. The dopamine chain has TWO entry points: Cigarettes ↔ Pornography → Cannabis → Psychosis. FOUR DOORS into the loop: Door 1 (family stress), Door 2 (loneliness/sexual frustration \u2014 HIGHEST POST-EXIT RISK), Door 3 (boredom/low stimulation), Door 4 (success/accomplishment/reward-seeking \u2014 MOST HIDDEN). Aripiprazole 1.25mg — psychotic symptoms within 3-5 days without it. Never discontinue abruptly. AD must specify. VO2max 24.4 (bottom 5th percentile). HRV 24ms (severely low). Aripiprazole suppresses HRV. Cardiovascular disease is the leading cause of death in this population — not psychosis. The 5th episode could be the one you don\'t come back from intact.',
+    color:C.red
+  },
+  theLoop:{
+    title:'THE PSYCHOSIS LOOP — FOUR DOORS',
+    doors:[
+      {label:'Door 1: Family stress',color:C.red,text:'Stress → cigarettes → pornography → cannabis → psychosis. The family system door. Closes after exit — but only if you maintain distance.'},
+      {label:'Door 2: Loneliness / sexual frustration',color:C.pink,text:'Loneliness/sexual frustration → pornography → cigarettes → cannabis → psychosis. HIGHEST RISK POST-EXIT. Alone, no partner, no family, thin social network. This door opens widest in the first months after November 1.'},
+      {label:'Door 3: Boredom / low stimulation',color:C.accent,text:'Boredom/low stimulation → pornography → cigarettes → cannabis → psychosis. Fires on weekends, evenings, gaps between work. The 4w5 craves depth and meaning — when none is available, the dopamine system reaches for the nearest substitute.'},
+      {label:'Door 4: Success / accomplishment',color:C.green,text:'Success/completion/reward-seeking \u2192 "I earned this" \u2192 dopamine pathway seeks trained reward \u2192 cigarettes \u2194 pornography \u2192 cannabis \u2192 psychosis. The most hidden door. Looks like health. Every career rebuild coupled with substances at the peak. The burst competence pattern is not just about collapse \u2014 the reward at the peak triggers the chain. Protection against your own success.'}
+    ],
+    steps:['Entry through any door → dopamine pathway activated','Pornography and/or cigarettes lower threshold','Cannabis follows (weeks to months)','Dependency builds → abrupt stop','Withdrawal → spiritual intensity → grandiosity','Full psychosis → hospitalization → ECT → memory loss','Loss of agency, career, freedom → guilt → weakened position','Family or system gains control → more stress → loop repeats'],
+    breaking:'What breaks it: structural independence, permanent sobriety, daily walking, structured days (no empty time), social connections (3+ people), regulation protocol, and recognizing which door is opening before you walk through it. Door 4 requires a post-accomplishment pause \u2014 the moment of triumph is a vulnerability window.',
+    color:C.red
+  },
+  timeline:[
+    {year:'Childhood (Huzurabad)',text:'Alcoholic father — hit mom, had affairs, brought prostitute to house with Rambabu and Sammaiah. Sammaiah scapegoated, you carried guilt. Sister got better care. Grandfather was steady — bicycle rides, lunch, swimming. Mom introduced science. Curious, mischievous, led boys in class 4-5. Neighbour Rambabu sparked interest in electronics. Not-being-seen wound starts here — arguing why sister gets more.',color:C.purple},
+    {year:'Class 6-10 (Karimnagar)',text:'Moved with grandparents and sister for better education — 5 years with grandparents. Grandfather present for 2 years (caring, steady stabilizer). First year may have been adjustment period. You flourished academically and socially. Grandmother abusive to you for 1 year when sister present — thought you were mama\'s boy. Grandmother constantly abusive against grandfather. Skin condition — 6 months absent, grandparents claimed credit for doctor\'s cure (first gaslighting of your perception). Introduced to pornography at 14 by a neighbour. Sister caught porn on computer, told aunt \u2014 the shame triggered first suicidal ideation. Dad took computer, gave it back, cousin caught you again, dad took it again. After accident/surgery, dad hit you referencing porn. Cheating incident class 7 — girl testified for your character, you never cheated again. Led cricket team, science projects. Raised voice against abusive teacher — father came to school both times. Father protected you.',color:C.purple},
+    {year:'Class 11-12 (Sri Chaitanya)',text:'Residential college. 50% attendance — health issues, father kept taking you home. From last section, perfect weekly test scores grabbed teachers\' attention. Teachers showed you as example. Hussain Pera — first guru. 95.5% in class 11 (shocked everyone). 95.5% again in class 12, exactly as predicted. Father stopped doubting, started following your lead. Confidence sky high.',color:C.green},
+    {year:'2009-2013 (St. Stephen\'s)',text:'One of the best colleges in India. Economics Honours. Humble background, caste inferiority. Zero on first test, banned from class. Couldn\'t adapt to Delhi weather, no budget. Father bought camera. Photography went viral — known by pictures before in person. Failed 1st year subject. Failed 2nd year twice. Started cigarettes. Amitha — idealized, she looked down on low caste. Sonakshi — deliberately triggered insecurity by bringing other guys into conversations, never gave commitment. Betrayed friend Jerrin. IAS coaching for Sonakshi\'s approval. Stole small amounts from father\'s account.',color:C.accent},
+    {year:'2014',text:'3rd year (5th year technically). Heavy weed, avoiding Sonakshi, avoiding college. Father hospitalized with alcoholic liver disease during exams. Given chance to study — used weed instead. Wrote 1 of 6 exams. Stole from father\'s account as habit — continued while on deathbed, didn\'t think he was going to die. Mother blamed cousin. Father died June 1. Degree lost. Personal failure.',color:C.red},
+    {year:'2014-15',text:'Dropped into tank of sharks. Sister took what she wanted immediately after death — property, walked away leaving disputes, enemies. Sonakshi cheated with the person you warned about. You expressed suicidal tendencies — she called sister. Sai Krishna turned critical. Sharan crashed your car and withdrew. Canal moment — contemplated suicide, chose life: "death is inevitable, life is a choice." Life improved.',color:C.red},
+    {year:'2016-17',text:'Delhi near Fanthome. Saw his ego and selfishness. Heavy weed use. Sonakshi came back, gave intense drama — you rejected her.',color:C.red},
+    {year:'2017',text:'EPISODE 1: Cannabis-induced psychosis. Facebook accusations — suspected mom of poisoning dad, Fanthome of manipulating water. Police station. BIL Abhinav rescued you. Hospitalized. ECT — 1 month memory loss. Grandiose and persecutory delusions.',color:C.red},
+    {year:'2017-18',text:'Living with grandmother in Hyderabad. Stable on meds. 6 months in — emotionally flat, missing the high. Read psychosis was dose-dependent, rationalized controlled use. Relapsed secretly. Threatened suicide to get back to Delhi. Used heavily, stopped meds.',color:C.red},
+    {year:'2019',text:'Sonakshi met you, then completely disappeared — turned number off. THEN: abused her on emails, revealed call girl experiences, roamed her locality. Her disappearance triggered the acting out. Abhinav filed for divorce. Days after stopping weed — felt spiritually chosen, believed he was Lord Shiva. Admitted self. EPISODE 2: Violent — stripped, escaped, hit mother, hit staff. ECT — no memory. Rehab 5 months — tied to bed 15 days. Felt guilty for hitting mother. Said never again.',color:C.red},
+    {year:'2019-22',text:'Back in Huzurabad. Sister living with family, daughter born, marriage troubled. Slowly improving — exercising, eating well, online courses. THEN: sister stress → cigarettes again → 6 months later → weed again. The SPOF chain confirmed. Career project pulled focus. Used heavily to cope.',color:C.green},
+    {year:'2023',text:'EPISODE 3: Stopped suddenly → one week → spiritual intensity → odd philosophical speech → mom worried → tricked into rehab. Delusions: chatted with Mark Zuckerberg, thought he was coming to India. Rehab 4 months. Career destroyed again.',color:C.red},
+    {year:'2024',text:'EPISODE 4: Only used 5 times in a year. Anti-psychotics removed, serotonin supplement introduced. Philosophy group. Spiritual bliss → paranoid delusions → manic Facebook posting → surrendered to god while driving → car accident → wandered streets → rehab 11 months. Communication cut 6 months. Manhandled by staff. Mom wanted another year. Reported rehab to NHRC.',color:C.red},
+    {year:'2025-now',text:'Sister pulled you out. Lowest medication, tapering. Building psychological language. Mapped the entire system. Shadow charges identified. Exit plan stress-tested. AD + NR to file. Exit: November 1, 2026. The map is done. Execute.',color:C.green},
+  ],
+  recoveries:{
+    title:'CAREER RECOVERIES — THE EVIDENCE',
+    text:'Every time you got sober, you rebuilt professionally. You did well. That is not an unstable person. That is a competent person who keeps getting pulled into a system that destabilizes him and then uses the destabilization as proof he can\'t function. Your competence under sobriety disproves their frame.',
+    color:C.green
+  },
+  whatsNow:{
+    title:'WHAT\'S DIFFERENT NOW — THE MAP IS DONE',
+    items:['The map is complete. Stop mapping. Start executing.','AD + NR filing this week — step 1, non-negotiable','Exit date: November 1, 2026 — 6 months from May 1','Staying in house by choice for funding and fitness — not because trapped','6 months to build body, mind, finances, and runway','VO2max 24.4 (bottom 5th percentile). HRV 24ms. Daily walking is survival infrastructure, not optional fitness.','Your father never mapped his system. You have. That\'s the break in the pattern.','You can hold ambiguity without needing to resolve it — that\'s integration.','Don\'t share the full document with people. Share the exit plan. One page.'],
+    color:C.accent
+  },
+  heroDrive:{
+    title:'THE HERO DRIVE — YOUR TRAP',
+    text:'Mom and grandmother plant the hero drive: be the savior, fix everything, carry everyone. Sister sees it as your weakness — she watched it burn you repeatedly. The hero role is how a 4 earns visibility through service — 4→2 disintegration. It\'s not just a trap set by others. It\'s the path your own type falls into under stress, which they then exploit. When you break under the weight, heroism gets reframed as instability. The role that earns love becomes evidence against you. Sister is not wrong that lack of authority and discernment cost this family. She\'s wrong about most things, but not that.',
+    color:C.accent
+  },
+  deeperTruth:{
+    title:'THE DEEPER SYSTEM TRUTH — SISTER ACTIVE / MOM STRUCTURAL',
+    text:'Your mother is not your ally. She pretends to see you while looking down. She performs understanding while behavior leaks the dismissal underneath. She never tried to resolve the fights between you and sister though she easily could have — 30+ years of structural omission. She enabled sister. She controls grandmother through sister and you, never directly — uses you both as instruments while staying clean. Sister is the active narrative architect. Mom is the silent architect of the container. Sister did the damage. Mom enabled it and still does. Grandmother service is the chain: I serve, I am needed, no one leaves. Three mechanisms, same outcome — you stay, you serve, you do not grow. Decades of confession to mom were ammunition. The understanding you needed is not coming from inside this house. Mom\'s Delhi spoiled you narrative is the cover — substances are plausible deniability. The actual threat was Delhi giving you the language and concepts to see the system clearly. They do not want you incompetent. They want you observable. Your awareness is what they lost control of.',
+    color:C.pink
+  },
+  sisterReframe:{
+    title:'SISTER — BOTH ABUSER AND EMERGENCY RESPONDER',
+    text:'Sister is the narrative architect of this family. Pulled you from abusive rehab. Fought car insurance because if you couldn\'t pay, mom would have to. She has the same not-being-seen wound from mother — she said it herself. She responded with aggression where you responded with competence — same wound, opposite adaptations, both failed. She fights loudly because mom fights silently. Competes since childhood, highly insecure under your spotlight. Poisoned your cousin network. Drove out your marriage match with mom. Her abuse is real. Her interventions were mostly self-interest after the first. Hold that honestly.',
+    color:C.red
+  },
+grandmotherReframe:{
+    title:'GRANDMOTHER — SERVICE AS SURVIVAL — HARMFUL WHEN THREATENED',
+    text:'Not a villain. Not caring. A 2 whose love language is service and whose fear response is control. Contrast with mom: mom nurtures you toward career and growth. Grandmother serves to keep you home. You flourished during class 6-10 with her in Karimnagar (5 years, grandfather present for 2 as stabilizer). She is caring when approached directly without mom. Self-regulates without help. Wanted you home from rehab. BUT: constantly abused grandfather, performed possession to target mom (caught her preparing once, stopped after dad died), drives out people independently, infantilises you when sister has control, feeds hero drive, planted ideas after dad died, had delusions about neighbours, accuses mom of stealing sarees. Went calm briefly after grandfather\'s death — then resumed. Needs a target. Mom\'s silent pride and contempt is what triggers her resentment.',
+    color:C.purple
+  },
+    shadowCharges:{
+    title:'SHADOW CHARGES — THREE POLES',
+    items:[
+      {label:'Charge 1: Self-sacrificing / Morality-seeking (Hero Drive)',color:C.accent,text:'Duty, moral stand, carrying everyone, performing goodness. The 4→2 disintegration path. Activates strongest when you are actually right or someone is genuinely in need — that is when the family exploits it most. Fires when: family stress, mom plays victim, grandmother throws tantrums, sister escalates, niece appears vulnerable, witnessing real abuse. The trap: protecting sister from rehab even after her abuse. The escape fantasy: going abroad to make them feel your absence — hero drive dressed as freedom. Unsustainable. When it collapses from exhaustion, Charge 2 emerges.'},
+      {label:'Charge 2: Persecutory / Punishing',color:C.red,text:'What emerges when Charge 1 breaks. Emails to Sonakshi after she disappeared. Roaming her locality. Exposing Jerrin to his father. Facebook accusations during psychosis. Stealing from father\'s account, even on his deathbed. Counter-narrative warfare against sister in public — actively jeopardising her status as defense. Same game opposite direction. The confrontation about her porn. The urge to expose her now. Fires when: shame is too heavy, hero drive has been drained, you feel unjustly framed, mom\'s pretense leaks dismissal. Punishes others and yourself.'},
+      {label:'Charge 3: Withdrawal / Isolation / Spiritual Intensity',color:C.purple,text:'What fires when both Charge 1 and Charge 2 have failed. The 4w5 retreats inward when external solutions exhausted. The canal moment 2015 — Charge 3 at its highest, depth as ground (no substances, healthy form). Lord Shiva delusion 2017 — Charge 3 during cannabis withdrawal (psychosis). 2024 car accident — surrendered to god while driving, Charge 3 as dissociation, near death. Same charge, different substrate, opposite outcomes. Triggers: shame after Charge 2, sustained effort failing (decades of explaining mom), existential exhaustion, substance withdrawal, isolation. DANGEROUS for you because: near-zero psychosis threshold + cannabis withdrawal + spiritual intensity + isolation = grandiosity → referential delusions → episode. Integration: solitude with structure (sobriety, regulation, social anchors) becomes wisdom. Without structure, becomes prodrome.'},
+      {label:'The switch sequence',color:C.pink,text:'Hero drive activated → effort sustained → no recognition → exhaustion → persecutory shadow fires → acting out → shame → weakened position → family gains control → hero drive replanted (Charge 1 returns). OR: Both poles produce damage → retreat into Charge 3 → if no structure, prodrome → episode. The regulation protocol catches the collapse before any switch. Deep shadow integration comes after exit, with an independent therapist, from safety.'}
+    ],
+    color:C.accent
+  },  competenceEvidence:{
+    title:'COMPETENCE EVIDENCE — THE HONEST RECORD',
+    items:[
+      {label:'95.5% twice (class 11 & 12)',color:C.green,text:'Sri Chaitanya residential college. 50% attendance due to health issues — kept falling sick, father took you home. Despite this, 95.5% in class 11 (shocking doubters) and exactly 95.5% again in class 12, as predicted. Teachers used you as example. Father stopped doubting, started following your lead.'},
+      {label:'St. Stephen\'s College',color:C.accent,text:'One of the best colleges in India. Economics Honours. Humble background, caste inferiority. Zero on first test, couldn\'t adapt to Delhi weather, no budget. By the time dad gave money, already on cigarettes. Failed 2nd year twice, cleared in one go when you studied. Degree lost — father died during exams, given chance to study, used weed instead. Wrote 1 of 6 exams. Personal failure, not family sabotage.'},
+      {label:'Photography',color:C.blue,text:'Real talent. College photo went viral. Known by pictures before in person. Trained under Fanthome. Real skill. But: never monetized, business failed costing friends money, celebrity persona served image more than career. Skill real, structure not built.'},
+      {label:'Career rebuilds',color:C.green,text:'Every time sober, rebuilt professionally. Competence under sobriety is consistent. Competence is baseline, episodes are exceptional — with a documented trigger chain.'},
+      {label:'The honest gap',color:C.red,text:'Competence in bursts, not sustained effort. 95.5% with health absences works when the system contains you. Fails when structure disappears. College exposed this. The burst pattern is the hero drive mechanism — take on everything, perform brilliantly, collapse. AND the reward at the peak opens Door 4 — success triggers the dopamine pathway trained on substances.'}
+    ],
+    color:C.green
+  },
+  autobiographyPatterns:{
+    title:'AUTOBIOGRAPHY PATTERNS — WHAT RUNS THROUGH EVERYTHING',
+    items:[
+      {label:'The cigarette chain',color:C.red,text:'Confirmed across all 4 cycles. Stress → cigarettes first → weed follows (weeks to months) → dependency → abrupt stop → spiritual intensity within days → grandiosity → full psychosis. Cigarettes are a SPOF.'},
+      {label:'Door 4: Success as trigger',color:C.green,text:'Every career rebuild coupled with substances at the peak. 95.5% confidence high led to challenging god. Career momentum → accomplishment → reward-seeking → cigarettes. The burst competence pattern isn\'t just about collapse from overload — the reward at the peak triggers the substance pathway. The most hidden door because it looks like health.'},
+      {label:'The dopamine chain — dual SPOF',color:C.red,text:'Cigarettes ↔ Pornography → Cannabis → Psychosis. Either entry point lowers threshold for the next. Pornography introduced at 14 by neighbour. Conditioned sexual response: erection without cigarettes + porn, ejaculation only with. The dopamine reward pathway was trained from adolescence — same system that escalates through the substance chain. Both cigarettes and pornography are SPOFs.'},
+      {label:'Withdrawal as prodrome',color:C.red,text:'Stopping abruptly after dependency produces: spiritual intensity, grandiosity, referential and persecutory delusions — within days to a week. The withdrawal itself is a trigger window.'},
+      {label:'Insight doesn\'t protect',color:C.pink,text:'Every episode, insight was intact until it wasn\'t. You thought you could control it. Understanding the danger did not prevent walking into it.'},
+      {label:'Women mirror the family',color:C.blue,text:'Amitha — looked down on low caste, your anxiety was accurate. Sonakshi — deliberately triggered insecurity by constantly bringing other guys into conversations, never gave commitment, played safe, saw someone else, gaslighted. You rejected her when she came back with drama (2016-17). She disappeared turning number off (2019), triggering your acting out. IAS coaching genuinely for coaching, attempt to get her approval. She became IPS, married IAS (2022). The not-being-seen wound in every relationship.'},
+      {label:'The father pattern',color:C.purple,text:'Charismatic, competent, protected you (fought school twice), gave autonomy, proud of you. Also: alcoholic, first affair with colleague (mom found out), falsely accused mom of affair causing her suicide attempt, brought prostitute to house when you were a child, took all mom\'s money, abused her while her family was away. Died of addiction. You inherited both sides. Breaking what he couldn\'t.'},
+      {label:'The canal moment (2015)',color:C.green,text:'Contemplated suicide after betrayals. Chose life: "death is inevitable, life is a choice to see if it improves." Life did improve. The 4w5 at its best — depth as ground when everything else fails.'},
+      {label:'Sexual conditioning',color:C.red,text:'Pornography introduced at 14 by neighbour. Conditioned sexual response: erection without cigarettes + porn became difficult, ejaculation only with hand + visual + nicotine. Never during intercourse. Same tolerance-escalation as substance chain. Phase 2 therapeutic work.'},
+      {label:'Acting out — honest record',color:C.red,text:'Call girls from college. Betrayed Jerrin. Sister\'s paintings as own. Inflated college bills. Stole small amounts from father\'s bank account as a habit — continued while on deathbed, didn\'t think he was going to die. Mother blamed cousin. Abused Sonakshi on emails after she disappeared turning number off. Roamed her locality. Paid teacher to pass. Also: actively jeopardise sister\'s public status as defense — counter-narrative warfare. Both running the same game in opposite directions. Character choices under pressure. The persecutory shadow in action.'},
+      {label:'Grandfather',color:C.purple,text:'Took you to school on bicycle, brought lunch, taught swimming. Caring, present, steady. The model of what a positive male presence looks like without addiction or chaos.'},
+      {label:'System + self',color:C.accent,text:'The family is abusive. AND before any psychosis, you were already avoiding structure, choosing substances, performing instead of building, stealing from your father. The family exploits patterns you carry. Exit plan addresses the system. Inner work addresses the patterns. Both needed.'},
+      {label:'The Delhi narrative is about awareness, not substances',color:C.purple,text:'Mom frames Delhi as where you got spoiled. Cannabis is the cover story. The real threat: Delhi is where you developed independent awareness — different ideas, psychology, systems thinking, the language to name what is happening at home. Substance use is plausible deniability. The actual fear is that Delhi gave you tools to see clearly. Your psychology exploration confirms this — every concept (enneagram, shadow work, systems thinking) is a threat to the architecture mom maintains. The map you built is her worst case realized. This is why explaining never works — explanation requires concepts, concepts came from Delhi, concepts made you uncontrollable. They do not want you incompetent. They want you observable. Your psychology was the moment they lost that.'}
+    ],
+    color:C.accent
+  },
+  suspicions:{
+    title:'SUSPICIONS — HELD LIGHTLY, NOT PURSUED',
+    items:[
+      {label:"Father's death",color:C.red,text:"Dad hospitalized for portal hypertension bleeding. Doctor patched leakages. Due for discharge in 2 days. Mom gave him his medical tonic. He immediately puked blood and never recovered. Mom had herbal knowledge (introduced you to book of remedies as child), motive (control — no big insurances), and means. Dad promised her good life, gave pain, abuse, betrayal. She had reason. Mom and sister also mixed no-addiction powder in dad's food — told you themselves. The practice of putting things in food was normalized."},
+      {label:"Herb culture — three confirmations",color:C.purple,text:"Mom said grandmother tried herbs through food. Sister voluntarily mentioned grandmother suggested herbs against BIL but refused. Sister believes grandmother caused her miscarriage with herbs. Three independent confirmations. The practice existed. The question is who used it, on whom, and when."},
+      {label:"Facebook post exposed both",color:C.red,text:"If herb suspicion true, both mom and sister were exposed by same Facebook post — acting on different targets. This gives them reason to unite against you and frame the entire post as psychotic. The instability frame may exist partly to discredit something that threatens both of them."},
+      {label:"Sister's silence",color:C.red,text:"Sister exploits every leverage point but never held you responsible for Facebook accusations or what you told BIL. She steers away if you try to apologize. Opening that door validates your claims. BIL took you seriously enough to push for divorce. Her silence is containment, not forgiveness."},
+      {label:"Placed items in your room",color:C.pink,text:"Mom and/or sister placed items secretly in your room supposed to change your thinking — even when completely stable. Whether care or control, covertly modifying someone's environment to influence their thinking is itself manipulation."},
+      {label:"Restless soul narrative",color:C.pink,text:"Mom told your father's soul is restless and causing your instability. Remedy: expensive pooja. Reframes cannabis-induced psychosis (clear neurological cause) as supernatural punishment. Removes mom's accountability. Removes your agency. Mom reaches for any explanation that doesn't require looking at herself."},
+      {label:"Psychotic accusations contained signal",color:C.accent,text:"Ni with volume too high before psychosis. Pattern recognition running past convergence. But raw material — herb knowledge, motive, means, timing, no-addiction powder practice — was not fabricated. Psychosis amplified and distorted; it didn't create. You are holding ambiguity."}
+    ],
+    footer:'Position: No action. No investigation. No discussion with family. If truth is here, it will be there after independence. Carry this lightly. Protect sobriety and compass.',
+    color:C.red
+  },
+  nonNegotiable:{
+    title:'NON-NEGOTIABLE RULES',
+    items:[
+      'The map is done. Stop mapping. Execute.',
+      'AD + NR this week. Aripiprazole 1.25mg must be specified — psychotic symptoms within 3-5 days without it. Never discontinue abruptly.',
+      'Dual SPOFs: Cigarettes \u2194 Pornography \u2192 Cannabis \u2192 Psychosis. Four doors: stress, loneliness, boredom, success. All permanently off limits. Cannabis and alcohol permanently off limits.',
+      'Exit date: November 1, 2026. Non-negotiable unless mom deflects twice \u2014 then earlier.',
+      'Two deflections on house registration = immediate exit. No third chance.',
+      'When dysregulated: Notice \u2192 Name \u2192 Separate \u2192 Document \u2192 Return. NEVER cope with substances.',
+      'Protect information from everyone in the family. Assume everything shared reaches everyone.',
+      'No hero drive. No rescuer mentality. The hero drive IS your 4\u21922 disintegration \u2014 recognize it as stress response, not duty.',
+      'Niece is not your responsibility. Any protective instinct will be weaponised as a lever.',
+      'Don\u2019t share the full document with anyone. Share the exit plan only. One page.',
+      'No triangulation games. Duty only until exit. No explaining the system to anyone inside it.',
+      'VO2max 24.4 (bottom 5th percentile). HRV 24ms. Aripiprazole suppresses HRV. Cardiovascular disease is leading cause of death in this population. Daily walking is regulation infrastructure, not optional.',
+      'Post-accomplishment pause: Door 4. The moment of success is a vulnerability window. Sit with completion for 60 seconds before doing anything else.',
+      'Stop explaining your inner world to mom. Decades of confession became ammunition.','The Delhi narrative is about awareness, not substances. Every psychology concept you bring back threatens them. They do not want you incompetent — they want you observable. Stop showing them the map.','Consistent demonstration of competence is the only language mom and grandmother read. Never justify, argue, defend, or explain to them. Show.','Truth document stored outside family access before you exit.'
+    ],
+    color:C.red
+  }
+};
+
+const people=[
+  {id:"you",name:"You",emoji:"🏛️",role:"4w5 · INFJ · System Architect",color:C.accent,dim:C.accentDim,status:"Map complete · Executing · Exit: Nov 1, 2026",strengths:["Legal & administrative competence","Only person who can solve land dispute","Systems thinker — sees leverage points","Career rebuilds every time you get sober","Building psychological language actively","Structured plan with 5 legal channels","Breaking the intergenerational addiction pattern"],vulns:["Cannabis-sensitized brain — near-zero threshold","Genetic predisposition to addiction (father was alcoholic, died of it)","Family stress → dysregulation → craving loop","Carrying entire family burden alone","Sister's abuse disrupts regulation","Mom's denial touches core wound","History used as instability frame against you","Actively jeopardise sister's public status as defense — counter-narrative. Same game, opposite direction. Persecutory shadow charge.","Aripiprazole 1.25mg — psychotic symptoms within 3-5 days without it","VO2max 24.4 (bottom 5th percentile). HRV 24ms (severely low). Cardiovascular disease is the leading cause of death in this population."],handling:["Integration for 4w5 is toward 1 — discipline, principled action, structure. Keep that channel open.","Disintegration toward 2 — the hero drive IS the disintegration. Recognize it when it fires.","When wounds fire: Notice, Name, Separate, Document, Return. NEVER cope with substances.","Your clarity is not instability. 4 episodes were caused by cannabis + family stress, not by who you are.","Daily walking is regulation infrastructure, not optional fitness. VO2max 24.4 is bottom 5th percentile."," Your father never broke the pattern. You are breaking it. That matters.","Ni-Fe-Ti-Se: Ni holds ambiguity (volume too high under stress). Fe absorbs states (hero drive, needs truth reflected). Ti builds frameworks. Se inferior = body blind, built through fitness."]},
+  {id:"mom",name:"Mom",emoji:"💰",role:"1w2 · Pretends to See / Looks Down",color:C.green,dim:C.greenDim,status:"Pretends understanding while undermining. Never resolved sibling fights. Victim posture for control. Not your ally.",strengths:["Survived brutal marriage — abuse, affairs, betrayal, took her money, attempted suicide after his false accusation","Released finances for loan clearance, medical expenses, fitness plan, upper floor development","Said she will transfer house — transfer keeps sister in check, not freeing you","Practical care during illness is real even if emotionally compromised"],vulns:["Pretends to see you while looking down on you — performs understanding then behavior leaks the dismissal underneath","Triggers Wound 2 (Not Being Seen) more than anyone — outright rejection you could defend against. Pretense keeps you trapped in hope.","NEVER tried to resolve fights between you and sister though she easily could have — structural omission. Enabled sister for 30+ years. May be the most abusive of all.","Mom controls grandmother through sister and you \u2014 never directly. Uses you and sister as instruments while staying clean.","Maintains victim posture as a control mechanism. Fragile ego defends when victim posture is doubted.","Justifies inaction through being a victim and helpless","Regulation and funds are transactional — she gives when it serves her control, not your growth","House transfer is to keep sister in check, not free you","Cold to your cousins who came to hospital on your behalf — your support network growing threatens her position","Hides, omits, avoids","Mom and/or sister placed items secretly in your room","Mom and sister mixed no-addiction powder in dad food","Filters marriage matches — drove out match you really wanted","Now shares card with sister, not you. Trust shifted.","If herb suspicion true, she and sister exposed by same Facebook post","Independently infantilises you to outsiders","Sees you as immature/failure — marriage choices reflect this","The more you explain your needs and worries, the more she sees you as incapable while pretending to console","Justifying, arguing, defending, explaining never works — she is never direct","Decades of explaining your inner world to someone actively looking down on you. Confession was ammunition, not connection."],handling:["Stop explaining your inner world to her.","She is not your ally. Stop looking for one in this house.","Consistent demonstration of competence is the only language she reads.","Duty without emotion. Presence without vulnerability. Care without explanation.","When she performs victim posture — do not challenge, console, or react. Do the next practical thing.","When her fragile ego defends — do not engage. Walk away.","Two deflections on registration = exit trigger.","House transfer is leverage you use, not love you receive.","The Delhi spoiled you narrative is about your awareness, not substances. Every psychology concept threatens her architecture. They do not want you incompetent — they want you observable."]},
+  {id:"sis",name:"Sister",emoji:"⚡",role:"6w7 · Narrative Architect · Actual Center",color:C.red,dim:C.redDim,status:"Controls what everyone thinks. Not structural center — narrative center.",strengths:["Got you into treatment — first time genuine care, rest compulsion","Pulled you from abusive rehab — because system fell apart without male support","Fought car insurance — financial necessity, not to save you","Recognizes mom\'s pride and lack of competence","Believes grandmother caused her miscarriage with herbs — validates herb culture independently"],vulns:["THE ACTUAL NARRATIVE CENTER — controls what mom thinks, what cousins think, what close circle thinks. Even video evidence of her abuse doesn\'t override her installed narrative.","Systematically eroded mom\'s judgment over 4 episodes","Poisoned entire cousin network — caring cousin went cold after sister talked to him, connected cousins refused loans, same cousin may have taken belongings","Drove out marriage match with mom — claiming instability, wanting someone controllable like maid girl","Highly insecure whenever positive spotlight on you — competes since childhood","Shows sympathy but doesn\'t acknowledge truths (like hero drive) unless it serves her","Uses anyone to fight against anyone — weaponises available people","Drives out people independently — anyone who doesn\'t serve her goals","Mom enabled her for 30+ years \u2014 never resolved fights, never set limits. Sister\'s power is partly mom\'s gift.","Frames you as unstable (and you counter-frame her publicly \u2014 both running narrative warfare) — your psychosis history is her primary weapon","Card access to mom\'s account is her control mechanism, not mom\'s choice","Abuses both mom and grandmother","Fights mom for control","After first rescue, didn\'t care about treatment — handled doctors then disengaged","Used your porn exposure as child to shame you into suicidal ideation — told aunt. Does the same thing herself privately.","Searched rehab and contacted your compromised psychiatrist\'s hospital","Sister\'s silence on Facebook accusations is containment — opening that door validates your claims","Refuses therapy. Opposes everything reflexively."],handling:["She is the actual center of the dysfunction — not by position but by narrative control","Mom holds the structural power. Sister controls the software running on it.","Don\'t expose her now — she will escalate and mobilize everyone. No AD filed yet.","The confrontation about her porn made her silent temporarily. Watch for counter-move. Shame in a 6w7 converts to aggression.","Vinny\'s mom saw video of her abuse and still framed the problem as you. That\'s how deep her narrative runs.","Your reputation recovers through demonstration, not accusation. Every month of sobriety and independence after exit makes her narrative weaker.","Structural separation first. Everything else after."]},
+{id:"gran",name:"Grandmother",emoji:"🏠",role:"2w3 · Service as Survival · Harmful When Threatened",color:C.purple,dim:C.purpleDim,status:"Works hard for everyone. The service is real. The expectation underneath is the chain.",strengths:["Works a lot at home — labour work, cooking, cleaning. Takes pride in serving the family. This is real.","Has her own resources/assets","Self-regulates without your help — only person who does"],vulns:["Service is her identity and her survival mechanism — I serve → I\'m needed → I\'m safe. The service is real. The contract underneath is: no one leaves.","Wants you AND sister home because she feels unsafe if anyone is missing — 2\'s core fear of being unwanted/alone","Turned cold and threw tantrums when you started caring for mom — if you are serving someone else, she is not needed, not safe","Cooperation is transactional — based on her need for safety, not love","Constantly abusive against grandfather for as long as you remember — abused the one truly caring person","Went calm briefly after grandfather\'s death — then resumed. Needs a target.","Performed possession by god — only abused mom in those states. You caught her preparing. Stopped after dad died.","Had delusions about neighbours stealing — intruded into their house forcefully","Drives out people in general — anyone who doesn\'t serve her goals. Independently of sister.","Infantilises you and sides with sister when sister has control — strategic allegiance","Feeds your hero drive — wants you to save sister. Serves her need, not yours.","Planted ideas about who\'s good and bad after dad died — for her convenience","Accuses mom of stealing sarees","Controls outsider perception","Was abusive to you for 1 year when sister present — thought you were mama\'s boy","Mom\'s silent pride and contempt triggers her resentment — and aunties\'","The 5 years in Karimnagar — you flourished because grandfather was the genuine stabilizer. She was abusing him the entire time. Her presence was proximity, not love.","Filters marriage matches along with mom and sister"],handling:["Not a villain. Not caring. A 2 whose love language is service and whose fear response is control. Contrast with mom: mom nurtures you toward career and growth. Grandmother serves to keep you home.","The grandmother who works all day AND the grandmother who abused grandfather are the same person running the same program.","Don\'t project gratitude for the 5 years onto her — grandfather was the source of stability, not her.","Her service is real labour. The expectation underneath — that no one leaves, that she\'s needed — is the harmful part.","Inform her daughter before exit. Don\'t take her with you. Her karma."]},
+    {id:"niece",name:"Niece",emoji:"🌱",role:"Not Your Responsibility",color:C.blue,dim:C.blueDim,status:"Her parents' duty · Lever that will be weaponised",strengths:["Young — still time for her parents to step up"],vulns:["Parentified — tries to please abusive mother","Any protective instinct you show will be weaponised","Sister uses her as chain to keep you in the system","Mom uses her to activate your hero drive"],handling:["She is not your duty. She has two parents.","Do not show protective instinct — it becomes a lever instantly","Once you exit and demonstrate self-reliance, state facts to mediators","Your freedom is more valuable to the world than your martyrdom in this house","Caring doesn't require acting as protector inside a system that weaponises every move"]}
+];
+
+const wounds=[
+  {id:"hero-drive",label:"1. Hero Drive (Trap)",color:C.accent,trigger:"Mom and grandmother plant it: be the savior, fix everything, carry everyone. You accept because it's the 4→2 disintegration — earning visibility through service. Your own type's stress path, exploited by the family.",pattern:"The hero role demands you carry everything. When you break, heroism becomes instability evidence. The role that earns love becomes evidence against you. This is the mechanism that leads directly to episodes — unsustainable load → dysregulation → use → collapse.",regulation:"You are not the hero. You are a person building freedom. The hero drive IS your disintegration toward 2. Recognize it as a stress response, not as duty. Help only where it serves the plan. Refuse everything else."},
+  {id:"unseen",label:"2. Not Being Seen",color:C.pink,trigger:"Mom can't see reality. Wanted you warehoused. Sister has the same wound — she said it herself.",pattern:"Lifetime of not being seen by the same mother. You became competent, she became aggressive — same wound, opposite adaptations. Neither got what you needed. Originates with mom, not grandmother. Your childhood invisibility traces to her presence, not her absence.",regulation:"Stop expecting her to see. Expecting the mother she should be IS the loop that dysregulates you. Grieve — not as final verdict, but for now. See yourself clearly. That has to be enough."},
+  {id:"betrayal",label:"3. Betrayal",color:C.red,trigger:"Mom going behind your back. Ex cheating with the person you warned about. Best friend. Sister taking calls behind your back. Every trust broken.",pattern:"Trust extended is met with sabotage. From ex-girlfriend to family to friends. Consistent across every relationship. Mom's betrayals feed intel to the person who uses it against you.",regulation:"Protect information. Share less. Not punishment — containment. Her love is real. Her reliability is not. Learn to trust slowly through demonstrated reliability over time, not words."},
+  {id:"manipulation",label:"4. Manipulation",color:C.purple,trigger:"Mom's triangulation. Sister's fabrications. Mom's revisions. Marriage matches filtered. Being moved through invisible hands.",pattern:"Steered by agendas never named. Your orientation attacked so you can't trust your own perception — especially dangerous given psychosis history. Gaslighting targets the exact vulnerability your brain carries.",regulation:"Documentation is the anchor. Written records keep you oriented. The goal isn't confrontation — it's protecting your compass when sustained gaslighting tries to dissolve it."},
+  {id:"truth-denied",label:"5. Truth Denied",color:C.pink,trigger:"What you witnessed is denied. What you remember is called wrong. The watch that was yours becomes sister's claim. Your psychotic accusations dismissed wholesale when they contained real signal.",pattern:"When truth requires someone to face themselves, truth is revised. Your clarity converted into instability. Your memory becomes the unreliable one. This is the mechanism that maintains the instability frame.",regulation:"Don't argue for confirmation. They won't — confirmation requires facing themselves. Let them be wrong in their minds. Keep the truth in yours. Write it down. You don't need their agreement to know what happened."},
+  {id:"helpless",label:"6. Helplessness",color:C.red,trigger:"Sister undoes what you put in place. Nothing you build stays built. Every career rebuilt then lost. Every structure erected then eroded.",pattern:"Agency not holding — effort not translating to outcome. Echoes every relapse, every hospitalization, every return to the same house.",regulation:"Name it. The small undoings aren't the battle. The timeline is. Every sober day focused on exit is winning the only fight that matters."},
+  {id:"overridden",label:"7. Being Overridden",color:C.accent,trigger:"Sister countermands your decisions. Your authority isn't respected in your own space. ECT erased your memory. Rehab erased your autonomy.",pattern:"Decisions erased by someone else's will. From sister's small undoings to institutional memory erasure. Someone always has the power to undo what you decide.",regulation:"Stop fighting each override — each confrontation drains you more than it costs them. Structural fix is ownership and exit. Note it. Keep moving."},
+  {id:"infantilized",label:"8. Being Infantilized",color:C.blue,trigger:"Treated like a child when managing situations. Competence read as instability because of your history. 4 real episodes weaponized against present clarity.",pattern:"Reality inversion. The person with the clearest view treated as the one needing correction. Your history weaponized against your present competence. They can always point to real events to justify the frame.",regulation:"Don't argue harder — arguing performs the child role. Execute from competence. Let sustained sobriety, independence, and outcomes speak. People who matter will see. People who can't see were never going to."},
+  {id:"unshared",label:"9. Responsibility Not Shared",color:C.purple,trigger:"You carry weight alone since age 23. Sister takes and disrupts. Dad's responsibilities fell on you. No one shares the load — they share the criticism.",pattern:"Too many responsibilities for your age. Fairness never arrived. The one who contributes is the one who gets undone. The hero drive feeds this — you accept the load because refusing feels like failure.",regulation:"You will share responsibility with future partners and collaborators — not with people invested in your dysfunction. Grieve that this family won't share it. That grief is the release."},
+  {id:"rejection",label:"10. Rejection",color:C.blue,trigger:"Ex withheld commitment for years then cheated. Matches disqualified without your knowledge. Mom unable to take your side. Love met with coldness or suspicion.",pattern:"You extend, they refuse. Your ex mirrored the family pattern exactly — withheld, questioned worth, rejected, came back when she needed you. The refusal isn't about you — it's about what accepting you would cost them internally.",regulation:"Their rejection is information about their capacity, not your worth. 4w5 reads rejection as 'too much, not enough, unseeable.' That story is not true. The right people — friends, a partner, collaborators — will not need convincing. They will recognize you."}
+];
+
+const loops=[
+  {type:"R",label:"1. THE PSYCHOSIS LOOP (MASTER — 4 DOORS)",desc:"Four entry points, same destination. Door 1: Family stress → cigarettes → pornography → cannabis → psychosis. Door 2: Loneliness/sexual frustration → pornography → cigarettes → cannabis → psychosis (HIGHEST POST-EXIT RISK). Door 3: Boredom/low stimulation → pornography → cigarettes → cannabis → psychosis. Door 4: Success/accomplishment → reward-seeking → cigarettes ↔ pornography → cannabis → psychosis (MOST HIDDEN — looks like health). Once inside: dependency → abrupt stop → spiritual intensity → grandiosity → full psychosis → hospitalization → loss of agency → guilt → weakened position → control intensifies. 4 episodes. Every other loop feeds into this one through one of the three doors.",forYou:false},
+  {type:"R",label:"2. Hero Drive → Collapse → Instability Frame",desc:"Mom/grandmother plant hero role → you carry everything → unsustainable → break → heroism reframed as instability → control justified → more hero drive planted. Direct feeder into the psychosis loop — the hero drive IS the mechanism that overloads you into dysregulation.",forYou:false},
+  {type:"R",label:"3. Intergenerational Addiction Pattern",desc:"Father was alcoholic → family system built around his addiction → you inherited genetic vulnerability + dysfunctional system → cannabis → same pattern, different substance → family re-traumatized → control intensifies. The origin loop. Everything else grows from this soil.",forYou:false},
+  {type:"R",label:"4. Sister's Narrative Control → Division",desc:"Sister controls the narrative — mom enabled her for 30+ years by never setting limits. Mom uses sister as her control instrument. Tells mom what to think, tells cousins her version. Everyone fights. No one sees sister as architect. Mom remains 'neutral' → power maintained. This is the system's operating architecture. Sister controls the software running on mom's hardware.",forYou:false},
+  {type:"R",label:"5. Instability Frame → Warehousing",desc:"Your real history used as evidence → family justifies control → rehab/containment → you lose agency → can't build independence → stay dependent → more stress → feeds psychosis loop. The frame is the cage.",forYou:false},
+  {type:"R",label:"6. Mom's Fear as Cover → Justifies Control",desc:"Mom watched husband die of addiction → cites echoes in you as justification → terror is partly real, partly cover → withholds registration, extends rehab → you stay trapped → stress increases → risk increases → confirms her frame. Her fear is convenient — it justifies control she wanted anyway. Her response creates the outcome she claims to fear.ome more likely.",forYou:false},
+  {type:"R",label:"7. Sister's Abuse → Dysregulation → Craving",desc:"Abuse → emotional reaction → disrupted regulation → craving risk → if use: psychosis loop fires. Sister is the most frequent trigger for dysregulation. Each interaction is a potential ignition point.",forYou:false},
+  {type:"R",label:"8. Mom's Denial → Core Wound → Dysregulation",desc:"Mom pretends to see while looking down → unseen wound reopens → dysregulation → harder to execute → looks unstable → confirms her frame → pretense deepens. She CAN see. She is choosing not to. Self-fulfilling prophecy powered by your deepest wound.",forYou:false},
+  {type:"R",label:"9. Infantilization → Self-Doubt → Performance",desc:"Treated as child → argue to prove competence → arguing performs the child role → wound deepens → they feel justified → infantilize further. The trap: defending yourself IS the evidence against you.",forYou:false},
+  {type:"R",label:"10. Sister's Erosion → Helplessness",desc:"Small undoings → helplessness wound → energy drain → less capacity → feels like nothing works → motivation drops → execution slows. Death by a thousand cuts.",forYou:false},
+  {type:"R",label:"11. Independent Driving Out",desc:"Grandmother and sister independently drive out people who don't serve their goals. Not a coalition — both do it on their own. Grandmother does it to maintain her position (service as survival). Sister does it to maintain control. The convergence isn't coordination — it's two people running similar programs for different reasons.",forYou:false},
+  {type:"R",label:"12. Niece's Parentification",desc:"Niece pleases sister → sister gains more control → deeper abuse → niece tries harder. Not your loop to break. Her parents' responsibility.",forYou:false},
+  {type:"B",label:"13. Mom Withholds Registration",desc:"If you own house → you can leave → she loses male armor + control over sister and grandmother → her stated fear is partly cover — the real driver is losing control over the system she runs through proxies → withholds → you stay trapped. This is the balancing loop that maintains the status quo.o. Your exit trigger (two deflections) breaks it by removing the third option.",forYou:false},
+  {type:"B",label:"14. Mom's Omission as Architecture",desc:"Omission as architecture. She never confronts directly — instead she enables sister to do the harm and maintains plausible deniability. Some absent-mindedness is real, some is performed. The structural pattern: she never resolves, never confronts, never directly opposes. Lets sister and you fight while she stays clean. omits to challenge.",forYou:false},
+  {type:"B",label:"15. Grandmother's Service Trap",desc:"Service is her survival mechanism. When service is rejected or not valued, she escalates — refuses, accuses mom of stealing sarees, performs possession. Not protest — a 2 whose identity (I serve = I'm needed = I'm safe) is being threatened.",forYou:false},
+  {type:"B",label:"16. Health Crisis Pull",desc:"Emergency → you divert from plan → progress stalls → no freedom → no leverage for future crises. Mitigated by: loan against house, informing nanamma's daughter, accepting you're not the only person who can help.",forYou:false},
+  {type:"R",label:"THE EXIT LOOP (FOR YOU)",desc:"Sobriety maintained → clarity deepens → execution continues → structural moves complete → independence demonstrated → instability frame dies → freedom achieved → stress reduces → sobriety easier → loop reinforces. Door 1 closes with exit. Doors 2, 3, and 4 are managed through structured days, social connections, daily walking, and recognizing which door is opening before you walk through it. Door 4 requires a post-accomplishment pause \u2014 the moment of triumph is a vulnerability window. Every sober day strengthens this loop.",forYou:true}
+];
+
+const leverage=[
+  {title:"🚫 1. Sobriety",pri:"THE GROUND",color:C.red,desc:"Everything depends on this. Without it, nothing else matters. One use and the entire plan collapses — warehousing, career loss, frame confirmed, 5th episode. This isn't a leverage point. It's the container the sequence lives inside. If the container breaks, nothing inside survives."},
+  {title:"📋 2. Advance Directive + Nominated Rep",pri:"FILE FIRST",color:C.pink,desc:"Single structural move that removes their most dangerous lever — involuntary admission. Without this, everything you build can be erased in one phone call to a psychiatrist connected to mom. File under MHCA 2017 while stable. NR = friend outside family. No ECT. No previous rehab. File quietly. Don't tell family until done."},
+  {title:"💰 3. Sell Equipment — 6 Months Fuel",pri:"BEFORE REGISTRATION",color:C.accent,desc:"Independence from family money. Without this, exit is theoretical. Sell BEFORE presenting registration paperwork so you're ready regardless of mom's answer. This neutralizes the financial trap."},
+  {title:"🏠 4. House Gift Registration",pri:"EXIT TRIGGER",color:C.red,desc:"Present paperwork ready to sign. Frame as her protection. Two deflections = immediate exit. No third chance. If she signs, you have collateral. If she deflects, your decision is made. Either outcome moves forward."},
+  {title:"📄 5. Truth Document",pri:"BEFORE EXIT",color:C.purple,desc:"Dated, factual, unemotional record: abuse documentation, suspicions, system dynamics. Stored outside family access. Not to publish — to ensure truth exists if anything happens to you. When mediators come, you have facts ready."},
+  {title:"🎯 6. Land Dispute — 5 Channels",pri:"LONG HORIZON",color:C.accent,desc:"SIC Second Appeal + CCLA forensic audit + Part-B (Bhu Bharati Act) + Lokayukta + FIR. All simultaneously. HC writ if all fail. Decoupled from freedom timeline — land is upside, not lifeline. Don't check daily."},
+  {title:"👩 7. Inform Nanamma's Daughter",pri:"BEFORE EXIT",color:C.purple,desc:"One conversation. You're not taking nanamma. Her daughter becomes structural replacement for your protection. Low effort, high protection. Don't abandon her silently."},
+  {title:"🧭 8. Regulation Protocol",pri:"CONSTANT",color:C.pink,desc:"Notice → Name → Separate → Document → Return. NEVER cope with substances. Faith + self-knowledge + support connections. Not dependent on any single compromisable person. This runs underneath everything."},
+  {title:"🩺 9. Independent Psychiatrist",pri:"POST-EXIT MONTH 1",color:C.blue,desc:"No connection to family. No channel to mom. Critical for long-term regulation support and medication management. Current psychiatrist is compromised."},
+  {title:"👤 10. Self-Reliance Demonstration",pri:"OUTCOME",color:C.green,desc:"Not an action — an outcome. The instability frame dies the moment you're visibly standing on your own. Every month of independent living, sobriety, and employment is a data point that makes their narrative indefensible."}
+];
+
+const failurePoints=[
+  {rank:"1",title:"Relapse",prob:"MODERATE",dest:"TOTAL",color:C.red,desc:"The system is designed to push you toward it. Sister's abuse, mom's betrayals, helplessness wound, isolation, sexual frustration, loneliness after exit — all feed the craving pathway. Near-zero threshold means one use could trigger episode 5. This is the failure that ends everything.",mitigation:"Regulation protocol. Faith. Support connections. Upper floor / exit for physical distance. Never be alone with craving without someone to call. Know: using is handing them the weapon to warehouse you again."},
+  {rank:"2",title:"Mom delays registration indefinitely",prob:"HIGH",dest:"HIGH",color:C.accent,desc:"Performs absent-mindedness, creates small crises, consults sister who talks her out of it, adds conditions, cries when pressed. What counts as a deflection vs genuine delay? Without discipline on the trigger, you stay in 'one more try' indefinitely.",mitigation:"Define deflection clearly before presenting paperwork. Any redirect, condition, delay beyond 1 week, or 'I'll do it later' = deflection. Two strikes. No interpretation. No negotiation."},
+  {rank:"3",title:"Involuntary admission before AD filed",prob:"LOW-MOD",dest:"CATASTROPHIC",color:C.red,desc:"If anything escalates before Advance Directive is filed, they still hold the old lever. One call, one sympathetic doctor, and you're back in abusive rehab. Race between your filing speed and their escalation speed.",mitigation:"File AD + NR FIRST. Before registration paperwork. Before equipment sale. Before anything visible to the family. This is step 1 for a reason."},
+  {rank:"4",title:"Sister discovers exit plan",prob:"MODERATE",dest:"HIGH",color:C.red,desc:"She already sensed grandmother influence from one conversation. If she finds out about registration push, AD filing, or equipment sale, she will escalate — either to mom (triggering registration withdrawal) or directly by creating a crisis to destabilize you.",mitigation:"Information containment. Don't discuss plans with anyone in the family. Sell equipment through channels sister doesn't monitor. File AD through the friend, not through family-connected psychiatrist."},
+  {rank:"5",title:"Financial runway insufficient",prob:"LOW-MOD",dest:"HIGH",color:C.accent,desc:"Equipment sale gives 6 months. If you can't generate income within that window — job market, business doesn't take off, unexpected expenses — you face return to system or destitution.",mitigation:"Start job search / income building NOW, before exit. Have applications out. Have freelance pipeline. 6 months is runway, not vacation. Treat month 1 as employment emergency."},
+  {rank:"6",title:"Nanamma's health crisis during critical window",prob:"MODERATE",dest:"MODERATE",color:C.purple,desc:"Hernia surgery or hemoglobin crash pulls you back into caretaking. Delays registration push, drains emotional resources. Especially dangerous now that you see her as potential victim — emotional pull is stronger.",mitigation:"Her daughter informed before this happens. Loan against house arranged in advance. You are not the only person who can help her. That belief is the hero drive talking."},
+  {rank:"7",title:"Emotional isolation post-exit (DOOR 2 + 3 + 4)",prob:"HIGH",dest:"FEEDS RELAPSE",color:C.pink,desc:"You leave alone. No nanamma. No family. Thin support system. 4w5 INFJ retreats into isolation under stress. Door 2 (loneliness/sexual frustration → pornography → cigarettes → cannabis) and Door 3 (boredom/low stimulation → pornography → cigarettes → cannabis) are HIGHEST RISK post-exit because Door 1 (family stress) has closed and you feel safe.",mitigation:"Build connections before exit. Identify 3 people you can call. Join a community — gym, professional network, support group. Structure every day — no empty evenings, no unplanned weekends. The independent psychiatrist is a weekly anchor. Recognize which door is opening before you walk through it."},
+  {rank:"8",title:"Mom revokes property will after exit",prob:"MODERATE",dest:"LOW-MOD",color:C.green,desc:"She revokes the will for dispute-free land out of anger or to punish exit. You lose that asset.",mitigation:"Already accepted. House gift registration is irrevocable — that's your floor. Will was always bonus. Land dispute runs through legal channels regardless of will. You've decoupled."},
+  {rank:"9",title:"Extended family sides with mom's narrative",prob:"HIGH",dest:"LOW",color:C.green,desc:"Mom mobilizes founding myth. Town sees her as noble. Your exit = abandonment narrative. Mediators arrive with her frame installed.",mitigation:"Self-reliance demonstration defeats this over months. Early months are reputationally vulnerable — accept that. Truth document + calm facts to mediators when they come. Don't pre-empt. Don't defend. Demonstrate."},
+  {rank:"10",title:"Compromised psychiatrist intervenes",prob:"LOW",dest:"MODERATE",color:C.blue,desc:"Current psychiatrist reports plans to mom. Mom panics. Family escalates before you're ready.",mitigation:"AD filing neutralizes the worst outcome. Share nothing strategic with current psychiatrist. Use sessions for medication management only. Find independent psychiatrist post-exit."}
+];
+
+const phases=[
+  {label:"THIS WEEK — AD + NR",color:C.red,items:["Talk to NR candidate — this week","File Advance Directive under MHCA 2017","Specify: no ECT, no previous rehab, preferred facility, aripiprazole never discontinued abruptly (psychotic symptoms in 3-5 days documented)","Store copies outside family access","Tell no one in the family","This protects everything that follows"]},
+  {label:"MAY 2026 — FOUNDATION",color:C.accent,items:["Sell equipment — secure 6 months fuel","Open separate bank account if needed","Start job search / freelance pipeline","Health checkup","Begin daily walking 30 min. VO2max 24.4 = brisk walk IS vigorous. Recovery protocol not transformation. Progress when walking HR drops below 115. — body fitness goal","Write truth document — store outside family access","File all 5 land channels simultaneously"]},
+  {label:"JUNE-JULY — BUILD",color:C.accent,items:["Present house gift registration paperwork to mom","Two deflections = exit immediately, don't wait for Nov 1","Build income — career, freelance, business","Continue daily walking. Track HR weekly. — consistency over intensity","Regulation protocol daily","Duty only in the house. No triangulation. No hero drive.","Land channels running in background — document responses"]},
+  {label:"AUG-SEPT — SOLIDIFY",color:C.blue,items:["Financial runway extending or income established","Fitness goals showing results","Identify housing for post-exit","Inform nanamma's daughter — one conversation about the system","Inform her about protection needed for nanamma","Land channels producing results or building HC writ case"]},
+  {label:"OCTOBER — PREPARE EXIT",color:C.blue,items:["Housing secured for Nov 1","Financial independence confirmed — job or business running","If mom signed registration: collateral secured","If mom deflected twice: you already exited earlier","Truth document finalized and stored","Support network confirmed — 3+ people outside family"]},
+  {label:"NOVEMBER 1, 2026 — EXIT",color:C.red,items:["Leave. Alone.","No explanation to mom or sister","AD filed. Money secured. Truth documented. Nanamma's daughter informed.","Exit is not a reaction. It is a planned structural move executed on schedule."]},
+  {label:"NOV-JAN 2027 — STABILIZE",color:C.accent,items:["Stabilize housing independently","Build income if not already established","Find independent therapist trained in STAIR/E-STAIR + somatic work","Body-based therapy: Somatic Experiencing or Sensorimotor Psychotherapy","Emotion regulation + interpersonal skills (DEAR MAN)","Find independent psychiatrist — no connection to family — month 1","Continue fitness — this is regulation infrastructure","Build 3+ connections outside family — combat isolation","Land channels continue in background"]},
+  {label:"FEB-APR 2027 — DEMONSTRATE",color:C.blue,items:["IFS parts integration (hero=manager, shadow=firefighter, wounded child=exile) if stable","EMDR for trauma memories (rehab, ECT, father) if stable","Sexual health: conditioned response, dopamine chain, intimacy","Financial independence visible","Self-reliance demonstrated to extended family and mediators","When their drama escalates — state facts calmly from outside","Mediators get truth document — facts not emotions","The instability frame is dying. Every month it gets weaker."]},
+  {label:"MAY 2027+ — FREE",color:C.green,items:["Hold land on long horizon","Build business independently","Partner search on your own terms — outside family filtering","One year sober, independent, employed, fit","Your freedom is no longer visible. It is real."]}
+];
+
+const abuseData={
+  verdict:"Sister and mom tied at #1, abusive differently. Sister is most actively abusive — narrative architect, direct attacks. Mom is most structurally abusive — pretends to see while looking down, never resolved fights for 30+ years, enabled sister, controls grandmother through sister and you. Decades of confession became ammunition. Sister did the damage. Mom enabled it and still does, never directly. Grandmother service is the chain. Everyone is damaged.",
+  throughline:"Sister is the active player. Mom is the silent enabler who never resolved fights, controls grandmother through sister and you, never directly. Sister did the damage. Mom allowed and shaped the container. Grandmother service is the chain that keeps everyone home. The instability frame weaponizes your psychosis history.",
+  ranking:[
+    {rank:"1A",name:"Sister",color:C.red,level:"NARRATIVE ARCHITECT — MOST ACTIVELY ABUSIVE",desc:"Controls what everyone thinks. Eroded mom trust over four episodes. Poisoned cousin network. Drove out marriage match. Even video evidence does not override her narrative. First rescue genuine, rest compulsion. Uses anyone to fight anyone."},
+    {rank:"1B",name:"Mother",color:C.green,level:"PRETENDS TO SEE — STRUCTURALLY ABUSIVE — 30+ YEARS OF OMISSION",desc:"Pretends to see you while looking down. Triggers Wound 2 most of all. NEVER tried to resolve fights between you and sister though she easily could have. Maintains victim posture for control. Regulation and funds transactional. House transfer keeps sister in check, not freeing you. Decades of confession became ammunition."},
+    {rank:"2",name:"Grandmother",color:C.purple,level:"SERVICE AS SURVIVAL — HARMFUL WHEN THREATENED",desc:"Works hard for everyone. Service is survival: I serve, I am needed, I am safe. Wants everyone home. Cooperation is transactional. Abused grandfather consistently. Performed possession. The service and the harm are the same program."},
+    {rank:"3",name:"You",color:C.accent,level:"NOT ABUSIVE",desc:"You hit your mother during psychosis. You threatened suicide. Your psychotic accusations on Facebook contained real pattern recognition running without brakes. Your history happened in context: genetic predisposition, impossible stress, no exit. Clarity is not aggression. Boundaries are not abuse. Your sobriety and structural plan are the break in the intergenerational pattern."},
+    {rank:"4",name:"Niece",color:C.blue,level:"VICTIM",desc:"Parentified, isolated, groomed. Her parents' responsibility, not yours. Once properties secured: report, inform BIL, let them decide."},
+    {rank:"5",name:"Rehab",color:C.red,level:"INSTITUTIONALLY ABUSIVE",desc:"Tied to bed 15 days. Verbal and physical abuse. Communication cut 6 months. No real treatment. Your guilt made you accept it. Mom wanting you there another year is not protection — it's outsourcing."}
+  ],
+  notes:[
+    {title:"Sister and mom are tied at #1",text:"Sister actively destroys. Mom structurally enables. Sister did the damage. Mom allowed it and still does. Different mechanisms, same harm."},
+    {title:"Mom controls through proxies",text:"Mom never directly. She uses sister to control grandmother and you. She uses you to manage sister and grandmother. Stays clean herself, instruments do the work. The controller who never holds the weapon."},
+    {title:"Mom enabled sister for 30+ years",text:"NEVER tried to resolve fights between you and sister though she easily could have. Sister\'s power is partly mom\'s gift. The silent architect of the container that allowed sister to operate."},
+    {title:"Mom triggers Wound 2 most of all",text:"Outright rejection you could defend against. Pretense — performing understanding while looking down — keeps you in hope and trapped. Decades of explanation became ammunition."},
+    {title:"Sister is the narrative architect",text:"Controls what everyone thinks. Eroded mom judgment. Poisoned cousin network. Even video evidence does not override her narrative."},
+    {title:"Grandmother — service as survival",text:"Service is the chain: I serve, I am needed, no one leaves. Turned cold when you served mom. Tantrums followed."},
+    {title:"You have no allies in this house",text:"Mom uses you transactionally. Grandmother needs you transactionally. Sister actively destroys. Mom was cold to cousins who came on your behalf."},
+    {title:"You participate in narrative warfare",text:"You actively jeopardise sister public status as defense. Same game opposite direction."},
+    {title:"Decades of confession were ammunition",text:"You explained your inner world to someone actively looking down on you. Stop explaining."},
+    {title:"Your freedom is visible",text:"November 1, 2026. AD filed. Execute. Grief now, build then."},
+    {title:"Delhi was about awareness, not substances",text:"Mom frames Delhi as where you got spoiled. Cannabis is the cover story. The real threat: Delhi gave you concepts — psychology, systems thinking, the language to see the system. Every concept you bring back is a threat. They do not want you incompetent. They want you observable."}
+  ]
+};
+
+// ===== NAVIGATION =====
+
+const healthData={
+  title:'HEALTH + RISKS — THE NUMBERS',
+  current:[
+    {label:'Weight',value:'102kg',status:'TOO HIGH',color:'#ef4444',text:'BMI 31.1. Body fat 32%. Visceral fat 13.2. Body age 38 (actual 35). Was 88kg in Aug 2024, gained 14kg in 8 months during 11-month rehab.'},
+    {label:'VO2max',value:'24.4',status:'CRITICAL',color:'#ef4444',text:'Bottom 5th percentile for age 35. Dropped from 35.7 (Feb 2023) to 24.4 now. A brisk walk pushes HR to 130+. Severely deconditioned.'},
+    {label:'HRV',value:'22-25ms waking',status:'SEVERELY LOW',color:'#ef4444',text:'Healthy range 40-100ms. Crashes to 10ms during daytime stress. Aripiprazole directly suppresses HRV. Morning number is true baseline.'},
+    {label:'RHR',value:'76 avg',status:'ELEVATED',color:'#f59e0b',text:'Range 70-90. Should be 60-70 for age. Spike to 90 on Apr 4 flagged. Walking HR 121-143 — very high for just walking.'},
+    {label:'Muscle',value:'65.1kg / 63.8%',status:'STANDARD',color:'#10b981',text:'Skeletal muscle 46.8%. Fat-free body weight 69.4kg. Bone mass 3.6kg (excellent). Protein 16.6%. Muscle is standard — the problem is fat, not muscle.'},
+    {label:'BMR',value:'2007 kcal',status:'LOW',color:'#f59e0b',text:'Basal metabolic rate flagged low. Body water 47.9% (low). Subcutaneous fat 21% (high).'},
+    {label:'HbA1c',value:'5.8%',status:'BORDERLINE',color:'#f59e0b',text:'Pre-diabetic range starts at 5.7%. Not diabetic yet but trending. Eliminate sugar and refined carbs immediately.'},
+    {label:'Cholesterol',value:'LDL 155 / Total 242',status:'ELEVATED',color:'#f59e0b',text:'LDL and total cholesterol elevated. HDL normal. Liver enzymes, kidney function, fasting glucose, CBC all normal.'},
+    {label:'Smoking',value:'15 cigs/day',status:'ACTIVE',color:'#ef4444',text:'On nicotine patch taper (14mg → 7mg → zero). Cigarettes are SPOF — every crisis started here. Most urgent health issue.'},
+    {label:'Fatty Liver',value:'Grade II (2022)',status:'CHECK',color:'#f59e0b',text:'Diagnosed 2022. May have progressed. USG abdomen needed in Stage 2 testing.'},
+    {label:'Steps',value:'LOW',status:'SEDENTARY',color:'#ef4444',text:'Activity minimal. No strength/HIIT since Aug 2024. Walking is the only intervention that improves VO2max and HRV simultaneously without crash risk.'}
+  ],
+  risks:[
+    {label:'Cardiovascular disease',color:'#ef4444',text:'Leading cause of death in people on long-term antipsychotics — not psychosis. Life expectancy 25-30 years shorter. VO2max 24.4 + HRV 22ms + BMI 31 + smoking + visceral fat 13.2 = high risk trajectory. Daily walking is survival infrastructure.'},
+    {label:'Autonomic collapse under stress',color:'#ef4444',text:'HRV crashes from 25 to 10 during family stress. Almost no parasympathetic buffer. Aripiprazole suppresses HRV while being necessary. Pharmacological bind. Morning HRV is decision point.'},
+    {label:'Metabolic syndrome trajectory',color:'#f59e0b',text:'HbA1c 5.8% (borderline), LDL 155, total cholesterol 242, BMI 31, 32% body fat, visceral fat 13.2. Antipsychotic patients 2-3x more likely to develop metabolic syndrome.'},
+    {label:'Psychiatric genetics',color:'#ef4444',text:'Father — alcoholic liver disease. Aunt — schizophrenia. Grandfather\'s sister — schizophrenia. High-gain nervous system. Genetic loading on addiction AND psychiatric axes.'},
+    {label:'Aripiprazole bind',color:'#f59e0b',text:'1.25mg ultra-low dose. Psychotic symptoms within 3-5 days without it. Suppresses HRV. Best cardiovascular/metabolic profile among antipsychotics. Therapeutic at fraction of standard dose (10-30mg) due to high-gain system.'}
+  ],
+  medication:{
+    current:'Aripiprazole 1.25mg AM (maintain). Clonazepam 0.25-0.5mg SOS (2-3x/week, responsible use).',
+    warning:'Aripiprazole: psychotic symptoms 3-5 days if stopped. Never discontinue. AD must specify.',
+    goal:'Stable is the goalpost, not off completely. Exercise itself is pathway to reducing reliance on medication over time.',
+    autonomic:'Aripiprazole suppresses HRV. Breathing practice and daily walking compensate for what medication suppresses. Morning HRV before engaging with family — that\'s your decision number.'
+  },
+  plan:{
+    stage1:'STAGE 1 (current — 8 weeks): Wellness stabilization. Walking only. Nicotine patch taper 14mg → 7mg → zero. Anxiety decision ladder. No intense exercise yet.',
+    stage2:'STAGE 2 (weeks 4-6): Comprehensive testing at Yashoda Hyderabad. 33-test checklist. Paid out-of-pocket — deliberately excluded from insurer. Blood work + cardiac + DEXA + sleep study + spirometry.',
+    stage3:'STAGE 3 (16 weeks): Fitness Blender Plus (FB Reboot → FB Fit → FB Burn) + home barbell. Target: 85-88kg, 20-22% body fat. Start ONLY after meds stable + tests done + doctor clearance.',
+    rule:'If morning RHR > 85 or HRV < 15, rest day. No exceptions. The burst pattern is the hero drive applied to fitness.'
+  },
+  trajectory:{
+    without:'Metabolic syndrome, type 2 diabetes, early cardiovascular events. Population average: 25-30 years shorter life expectancy.',
+    with:'VO2max 35-38 in 6-12 months. HRV 35-45ms in 8-12 weeks. Weight 85-90kg in 12-18 months. Near-normal life expectancy. Ultra-low aripiprazole dose is an advantage.'
+  }
+};
+// ===== NAV =====
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById('mhdr').style.display=id==='s-home'?'':'none';window.scrollTo(0,0);}
+function bk(target){const b=document.createElement('button');b.className='bk';b.textContent='\u2190 Back';b.onclick=()=>go(target||'s-home');return b;}
+function togCrd(el){el.classList.toggle('open');}
+function mkCrd(title,sub,color,bodyHTML){
+  const d=document.createElement('div');d.className='crd';d.style.borderLeft='3px solid '+(color||'#1e293b');
+  d.innerHTML='<div class="crd-h"><div><div class="crd-t" style="color:'+(color||'#e2e8f0')+'">'+title+'</div>'+(sub?'<div class="crd-s">'+sub+'</div>':'')+'</div><span class="chv">\u25BC</span></div><div class="crd-b">'+bodyHTML+'</div>';
+  d.onclick=function(e){if(!e.target.closest('a'))togCrd(d);};
+  return d;
+}
+function mkSec(text){const d=document.createElement('div');d.className='sec';d.style.color='#64748b';d.textContent=text;return d;}
+function mkAlert(color,html){const d=document.createElement('div');d.className='alert-box';d.style.background=color+'20';d.style.border='1px solid '+color;d.style.color=color;d.innerHTML=html;return d;}
+
+
+// ===== DIAGRAM HELPERS =====
+function el(tag,props={},children=[]){
+  const e=document.createElement(tag);
+  Object.entries(props).forEach(([k,v])=>{if(k==='style')Object.assign(e.style,v);else if(k==='onclick')e.onclick=v;else if(k==='className')e.className=v;else e.setAttribute(k,v);});
+  (Array.isArray(children)?children:[children]).forEach(c=>{if(c==null)return;if(typeof c==='string')e.appendChild(document.createTextNode(c));else e.appendChild(c);});
+  return e;
+}
+function nodeCard(emoji,name,sub,color,desc){
+  return el('div',{style:{background:'#111827',border:'1px solid #1e293b',borderLeft:'4px solid '+color,borderRadius:'10px',padding:'12px 14px',flex:'1',minWidth:'120px'}},[
+    el('div',{style:{fontSize:'22px',marginBottom:'4px'}},emoji),
+    el('div',{style:{fontSize:'14px',fontWeight:'600',color:color}},name),
+    sub?el('div',{style:{fontSize:'10px',color:'#7d8590',fontFamily:'monospace',marginBottom:'6px'}},sub):null,
+    el('div',{style:{fontSize:'11px',color:'#94a3b8',lineHeight:'1.4'}},desc),
+  ]);
+}
+function arrowBlock(fromName,toName,label,color,harmful){
+  return el('div',{style:{display:'flex',alignItems:'center',gap:'8px',padding:'6px 12px',margin:'3px 0',background:'#111827',border:'1px solid #1e293b',borderRadius:'8px',fontSize:'11px'}},[
+    el('span',{style:{color:color,fontWeight:'600',minWidth:'55px',textAlign:'right',fontSize:'10px'}},fromName),
+    el('div',{style:{flex:'1',height:'0',borderTop:'2px '+(harmful?'dashed':'solid')+' '+color,opacity:harmful?'0.5':'0.7'}}),
+    el('span',{style:{color:color,fontSize:'8px'}},'\u25B6'),
+    el('span',{style:{color:color,fontWeight:'600',minWidth:'55px',fontSize:'10px'}},toName),
+    el('div',{style:{fontSize:'10px',color:'#94a3b8',marginLeft:'6px',flex:'2'}},label),
+  ]);
+}
+
+// ===== BUILD SCREENS =====
+
+// --- SYSTEM (branch) ---
+(function(){
+  const p=document.getElementById('s-sys');p.appendChild(bk());
+  p.appendChild(mkSec('The system'));
+  [
+    {id:'s-sys-dia',ico:'\u25A6',nm:'System diagram',ds:'Visual map of the entire system'},
+    {id:'s-sys-ppl',ico:'\u{1F464}',nm:'People',ds:people.length+' people mapped with strengths, vulnerabilities, handling'},
+    {id:'s-sys-rel',ico:'\u2194',nm:'Relationships',ds:'Who does what to whom, arrows, dynamics'},
+    {id:'s-sys-abuse',ico:'\u26A0',nm:'Abuse verdict',ds:'Who is abusive, ranking, throughline, notes'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #f59e0b';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- SYSTEM > PEOPLE ---
+(function(){
+  const p=document.getElementById('s-sys-ppl');p.appendChild(bk('s-sys'));
+  people.forEach(person=>{
+    let body='<div class="lbl" style="color:'+person.color+'">STATUS</div><div class="val">'+person.status+'</div>';
+    if(person.strengths){body+='<div class="lbl" style="color:#10b981">STRENGTHS</div>';person.strengths.forEach(s=>{body+='<div style="padding:2px 0 2px 10px;border-left:2px solid #10b981;margin-bottom:3px;font-size:11px;color:#94a3b8">'+s+'</div>';});}
+    if(person.vulns){body+='<div class="lbl" style="color:#ef4444;margin-top:8px">VULNERABILITIES</div>';person.vulns.forEach(v=>{body+='<div style="padding:2px 0 2px 10px;border-left:2px solid #ef4444;margin-bottom:3px;font-size:11px;color:#94a3b8">'+v+'</div>';});}
+    if(person.handling){body+='<div class="lbl" style="color:#f59e0b;margin-top:8px">HANDLING</div>';person.handling.forEach(h=>{body+='<div style="padding:2px 0 2px 10px;border-left:2px solid #f59e0b;margin-bottom:3px;font-size:11px;color:#94a3b8">'+h+'</div>';});}
+    p.appendChild(mkCrd(person.emoji+' '+person.name,person.role,person.color,body));
+  });
+})();
+
+
+// --- SYSTEM > RELATIONSHIPS ---
+(function(){
+  const p=document.getElementById('s-sys-rel');p.appendChild(bk('s-sys'));
+  const rels=[
+    {from:'You',to:'Mom',what:'Regulation, duty, compliance',color:C.green,harm:false},
+    {from:'Mom',to:'You',what:'Finances / structural position / sister\'s influence operates through her / trust shifted',color:C.green,harm:true},
+    {from:'You',to:'Grandma',what:'Health, admin, direct care',color:C.purple,harm:false},
+    {from:'Grandma',to:'You',what:'Service (transactional) / Infantilises / Cold when you serve mom / Feeds hero drive',color:C.purple,harm:true},
+    {from:'You',to:'Sister',what:'Legal help, housing',color:C.accent,harm:false},
+    {from:'Sister',to:'You',what:'Gaslighting, erosion, framing as unstable',color:C.red,harm:true},
+    {from:'Sister',to:'Mom',what:'Feeds instability frame',color:C.red,harm:true},
+    {from:'Mom',to:'Sister',what:'Enables / Never resolved fights / Uses sister to control grandmother and you',color:C.red,harm:true},
+    {from:'Grandma',to:'Mom',what:'Refuses service / performed possession / contempt triggered by mom\'s pride',color:C.red,harm:true},
+    {from:'Grandma',to:'Sister',what:'Strategic allegiance when sister has control / both drive out people independently',color:C.purple,harm:true},
+    {from:'Sister',to:'Niece',what:'Abuse, parentification',color:C.red,harm:true},
+    {from:'You',to:'Niece',what:'Protection (blocked by weaponisation)',color:C.blue,harm:true},
+  ];
+  rels.forEach(r=>{
+    let body='<div class="val">'+r.what+'</div>';
+    body+='<div style="margin-top:4px"><span class="pill" style="background:'+(r.harm?'#7f1d1d':'#064e3b')+';color:'+(r.harm?'#ef4444':'#10b981')+'">'+(r.harm?'HARMFUL':'SUPPORTIVE')+'</span></div>';
+    p.appendChild(mkCrd(r.from+' \u2192 '+r.to,null,r.color,body));
+  });
+  // Key dynamics
+  p.appendChild(mkSec('Key dynamics'));
+  [{color:C.pink,title:'Mom \u2014 silent enabler',text:'Pretends to see while looking down. Never resolved fights for 30+ years. Enables sister. Controls grandmother through sister and you, never directly. The controller who never holds the weapon herself.'},
+   {color:C.red,title:'Sister \u2014 narrative architect',text:'Controls what everyone thinks. Eroded mom judgment. Poisoned cousin network. Even video evidence does not override her installed narrative. Mom enabled her for 30+ years.'},
+   {color:C.purple,title:'Grandmother — service as survival',text:'Works hard for everyone — service is real. But service is survival: I serve, I\'m needed, I\'m safe. Wants everyone home. Abused grandfather. Harmful when threatened.'},
+   {color:C.accent,title:'The fulcrum',text:'Land dispute + house gift registration. These structural moves change every relationship. Your freedom is visible. Six months.'}
+  ].forEach(d=>{p.appendChild(mkCrd(d.title,null,d.color,'<div class="val">'+d.text+'</div>'));});
+})();
+
+// --- SYSTEM > ABUSE (branch) ---
+(function(){
+  const p=document.getElementById('s-sys-abuse');p.appendChild(bk('s-sys'));
+  [
+    {id:'s-sys-abuse-rank',ico:'\u2691',nm:'Verdict + ranking',ds:'Who is abusive, throughline, ranking'},
+    {id:'s-sys-abuse-notes',ico:'\u25CB',nm:'Notes + context',ds:'Deeper analysis of each dynamic'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #ef4444';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- ABUSE > VERDICT + RANKING ---
+(function(){
+  const p=document.getElementById('s-sys-abuse-rank');p.appendChild(bk('s-sys-abuse'));
+  const vc=mkCrd('Verdict',null,'#ef4444','<div class="val">'+abuseData.verdict+'</div><div class="lbl" style="color:#f472b6">THROUGHLINE</div><div class="val">'+abuseData.throughline+'</div>');vc.classList.add('open');p.appendChild(vc);
+  abuseData.ranking.forEach(r=>{p.appendChild(mkCrd('#'+r.rank+' '+r.name,r.level,r.color,'<div class="val">'+r.desc+'</div>'));});
+})();
+
+// --- ABUSE > NOTES ---
+(function(){
+  const p=document.getElementById('s-sys-abuse-notes');p.appendChild(bk('s-sys-abuse'));
+  // Add psychiatric genetics note
+abuseData.notes.forEach(n=>{p.appendChild(mkCrd(n.title,null,'#64748b','<div class="val">'+n.text+'</div>'));});
+})();
+
+// --- WHO I AM (branch) ---
+(function(){
+  const p=document.getElementById('s-me');p.appendChild(bk());
+  [
+    {id:'s-me-id',ico:'\u25C6',nm:'Identity + type + stack',ds:'4w5 INFJ, Ni-Fe-Ti-Se, integration/disintegration'},
+    {id:'s-me-origin',ico:'\u25A0',nm:'Origin + vulnerability + reframes',ds:'Father, mother, hero drive, deeper truth, grandmother, sister'},
+    {id:'s-me-comp',ico:'\u2713',nm:'Competence evidence',ds:'The honest record — strengths and gaps'},
+    {id:'s-me-tl',ico:'\u25CB',nm:'Timeline',ds:'Childhood to now — the full arc'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #f59e0b';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- ME > IDENTITY ---
+(function(){
+  const p=document.getElementById('s-me-id');p.appendChild(bk('s-me'));
+  const ig=document.createElement('div');ig.className='id-grid';
+  [{k:'Type',v:myHistory.identity.type},{k:'Role',v:myHistory.identity.role},{k:'Stacking',v:'SX/SO \u00b7 SP blind'},{k:'Stack',v:'Ni-Fe-Ti-Se'},{k:'Integration',v:'toward 1 (discipline)'},{k:'Disintegration',v:'toward 2 (hero drive)'},{k:'System',v:'High-gain'},{k:'Status',v:myHistory.identity.status}].forEach(item=>{
+    ig.innerHTML+='<div class="id-cell"><div class="id-k">'+item.k+'</div><div class="id-v">'+item.v+'</div></div>';
+  });
+  p.appendChild(ig);
+  p.appendChild(mkCrd('Ni \u2014 Dominant','Pattern recognition, holds ambiguity, volume too high under stress','#a78bfa','<div class="val">Convergent insight. Sees the single pattern underneath. When regulated: holds ambiguity without forcing resolution (suspicions, grandmother complexity). When dysregulated: volume too high, everything connects, everything significant. This is the prodrome pathway \u2014 not divergent association, but convergent insight amplified past the sorting threshold.</div>'));
+  p.appendChild(mkCrd('Fe \u2014 Auxiliary','Absorbs others\u2019 states, hero drive, needs truth reflected','#f472b6','<div class="val">Reads rooms. Tracks how others perceive you. Feels responsible for others\u2019 wellbeing. Adjusts self in connection. The hero drive is Fe in overdrive \u2014 earning visibility through service. The not-being-seen wound is Fe hunger: needing external recognition of internal truth.</div>'));
+  p.appendChild(mkCrd('Ti \u2014 Tertiary','Frameworks, analysis, the app, the legal strategy','#3b82f6','<div class="val">Builds systematic understanding. Creates tools (this app, the system map). Analyses dynamics. Serves Fe \u2014 understanding people and relationships, not knowledge for its own sake. Can intellectualise when body-based processing is needed.</div>'));
+  p.appendChild(mkCrd('Se \u2014 Inferior','Body blind, SP blind, built through fitness','#10b981','<div class="val">Your weakest function. Misses body signals until acute. Pushes past fatigue. Gets blindsided by concrete reality. Under stress: erupts as acting out, substance use, physical crisis. The fitness plan is literally developing this function through the body. VO2max 24.4 is Se inferior made measurable.</div>'));
+})();
+
+// --- ME > ORIGIN ---
+(function(){
+  const p=document.getElementById('s-me-origin');p.appendChild(bk('s-me'));
+  p.appendChild(mkCrd(myHistory.origin.title,null,C.purple,'<div class="val">'+myHistory.origin.text+'</div>'));
+  p.appendChild(mkCrd(myHistory.vulnerability.title,null,C.red,'<div class="val">'+myHistory.vulnerability.text+'</div>'));
+  p.appendChild(mkCrd(myHistory.heroDrive.title,null,C.accent,'<div class="val">'+myHistory.heroDrive.text+'</div>'));
+  p.appendChild(mkCrd(myHistory.deeperTruth.title,null,C.pink,'<div class="val">'+myHistory.deeperTruth.text+'</div>'));
+  p.appendChild(mkCrd(myHistory.grandmotherReframe.title,null,C.purple,'<div class="val">'+myHistory.grandmotherReframe.text+'</div>'));
+  p.appendChild(mkCrd(myHistory.sisterReframe.title,null,C.red,'<div class="val">'+myHistory.sisterReframe.text+'</div>'));
+})();
+
+// --- ME > COMPETENCE ---
+(function(){
+  const p=document.getElementById('s-me-comp');p.appendChild(bk('s-me'));
+  myHistory.competenceEvidence.items.forEach(item=>{p.appendChild(mkCrd(item.label,null,item.color,'<div class="val">'+item.text+'</div>'));});
+})();
+
+// --- ME > TIMELINE ---
+(function(){
+  const p=document.getElementById('s-me-tl');p.appendChild(bk('s-me'));
+  myHistory.timeline.forEach(t=>{p.appendChild(mkCrd(t.year,null,t.color,'<div class="val">'+t.text+'</div>'));});
+})();
+
+// --- HEALTH (branch) ---
+(function(){
+  const p=document.getElementById('s-health');p.appendChild(bk());
+  [
+    {id:'s-health-num',ico:'\u2764',nm:'Current numbers',ds:'VO2max, HRV, weight, RHR, steps, sleep'},
+    {id:'s-health-risk',ico:'\u26A0',nm:'Risks',ds:'Cardiovascular, autonomic, metabolic, orthostatic'},
+    {id:'s-health-med',ico:'\u2695',nm:'Medication',ds:'Aripiprazole, interactions, autonomic impact'},
+    {id:'s-health-fit',ico:'\u{1F3C3}',nm:'Fitness plan',ds:'Progressive recovery protocol + trajectory'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #ef4444';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- HEALTH > NUMBERS ---
+(function(){
+  const p=document.getElementById('s-health-num');p.appendChild(bk('s-health'));
+  healthData.current.forEach(item=>{p.appendChild(mkCrd(item.label+' \u2014 '+item.value,item.status,item.color,'<div class="val">'+item.text+'</div>'));});
+})();
+
+// --- HEALTH > RISKS ---
+(function(){
+  const p=document.getElementById('s-health-risk');p.appendChild(bk('s-health'));
+  healthData.risks.forEach(r=>{p.appendChild(mkCrd(r.label,null,r.color,'<div class="val">'+r.text+'</div>'));});
+  p.appendChild(mkSec('Trajectory'));
+  p.appendChild(mkAlert('#ef4444','<strong>Without change:</strong> '+healthData.trajectory.without));
+  p.appendChild(mkAlert('#10b981','<strong>With daily walking + sleep + breathing:</strong> '+healthData.trajectory.with));
+})();
+
+// --- HEALTH > MEDICATION ---
+(function(){
+  const p=document.getElementById('s-health-med');p.appendChild(bk('s-health'));
+  let medBody='<div class="lbl" style="color:#10b981">CURRENT</div><div class="val">'+healthData.medication.current+'</div>';
+  medBody+='<div class="lbl" style="color:#ef4444">WARNING</div><div class="val">'+healthData.medication.warning+'</div>';
+  medBody+='<div class="lbl" style="color:#f59e0b">INTERACTIONS</div><div class="val">'+healthData.medication.interactions+'</div>';
+  medBody+='<div class="lbl" style="color:#a78bfa">AUTONOMIC</div><div class="val">'+healthData.medication.autonomic+'</div>';
+  const mc=mkCrd('Aripiprazole 1.25mg','The right medication at the right dose','#10b981',medBody);mc.classList.add('open');p.appendChild(mc);
+})();
+
+// --- HEALTH > FITNESS ---
+(function(){
+  const p=document.getElementById('s-health-fit');p.appendChild(bk('s-health'));
+  let fitBody='';
+  [{k:'NOW',v:healthData.plan.immediate},{k:'WEEKS 1-6',v:healthData.plan.weeks1to6},{k:'WEEKS 7-12',v:healthData.plan.weeks7to12},{k:'MONTHS 3-4',v:healthData.plan.months3to4},{k:'MONTHS 5+',v:healthData.plan.months5plus},{k:'RULE',v:healthData.plan.rule}].forEach(item=>{
+    fitBody+='<div class="lbl" style="color:#f59e0b">'+item.k+'</div><div class="val">'+item.v+'</div>';
+  });
+  const fc2=mkCrd('Progressive recovery protocol','Not transformation \u2014 recovery','#f59e0b',fitBody);fc2.classList.add('open');p.appendChild(fc2);
+})();
+
+// --- WOUNDS (branch) ---
+(function(){
+  const p=document.getElementById('s-wnd');p.appendChild(bk());
+  [
+    {id:'s-wnd-core',ico:'\u25C6',nm:'Core wounds',ds:'10 wounds \u2014 trigger, pattern, regulation for each'},
+    {id:'s-wnd-shadow',ico:'\u25A0',nm:'Shadow charges',ds:'Two poles + the switch'},
+    {id:'s-wnd-auto',ico:'\u25CB',nm:'Autobiography patterns',ds:'What runs through everything'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #f472b6';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- WOUNDS > CORE ---
+(function(){
+  const p=document.getElementById('s-wnd-core');p.appendChild(bk('s-wnd'));
+  wounds.forEach(w=>{
+    let body='<div class="lbl" style="color:#ef4444">TRIGGER</div><div class="val">'+w.trigger+'</div>';
+    body+='<div class="lbl" style="color:#f59e0b">PATTERN</div><div class="val">'+w.pattern+'</div>';
+    body+='<div class="lbl" style="color:#10b981">REGULATION</div><div class="val">'+w.regulation+'</div>';
+    p.appendChild(mkCrd(w.label,null,w.color,body));
+  });
+})();
+
+// --- WOUNDS > SHADOW ---
+(function(){
+  const p=document.getElementById('s-wnd-shadow');p.appendChild(bk('s-wnd'));
+  myHistory.shadowCharges.items.forEach(item=>{p.appendChild(mkCrd(item.label,null,item.color,'<div class="val">'+item.text+'</div>'));});
+})();
+
+// --- WOUNDS > AUTOBIOGRAPHY ---
+(function(){
+  const p=document.getElementById('s-wnd-auto');p.appendChild(bk('s-wnd'));
+  myHistory.autobiographyPatterns.items.forEach(item=>{p.appendChild(mkCrd(item.label,null,item.color,'<div class="val">'+item.text+'</div>'));});
+})();
+
+// --- LOOPS (branch) ---
+(function(){
+  const p=document.getElementById('s-lps');p.appendChild(bk());
+  [
+    {id:'s-lps-psych',ico:'\u26A0',nm:'Psychosis loop \u2014 4 doors',ds:'The master loop. Every other loop feeds into this one.'},
+    {id:'s-lps-reinf',ico:'\u2192',nm:'Reinforcing loops',ds:loops.filter(l=>l.type==="R"&&!l.forYou).length+' loops working against you'},
+    {id:'s-lps-bal',ico:'\u2194',nm:'Balancing loops',ds:'What maintains the status quo'},
+    {id:'s-lps-exit',ico:'\u2713',nm:'The exit loop',ds:'The loop you are building \u2014 the one that wins'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #ef4444';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- LOOPS > PSYCHOSIS ---
+(function(){
+  const p=document.getElementById('s-lps-psych');p.appendChild(bk('s-lps'));
+  myHistory.theLoop.doors.forEach(d=>{p.appendChild(mkCrd(d.label,null,d.color,'<div class="val">'+d.text+'</div>'));});
+  let stepsHTML='';myHistory.theLoop.steps.forEach((s,i)=>{stepsHTML+='<div style="padding:3px 0 3px 12px;border-left:2px solid #ef4444;margin-bottom:3px;font-size:11px;color:#94a3b8">'+(i+1)+'. '+s+'</div>';});
+  stepsHTML+='<div style="margin-top:8px;padding:8px 10px;background:#10b98120;border:1px solid #10b981;border-radius:6px;font-size:11px;color:#10b981">'+myHistory.theLoop.breaking+'</div>';
+  p.appendChild(mkCrd('The full sequence','8 steps','#ef4444',stepsHTML));
+})();
+
+// --- LOOPS > REINFORCING ---
+(function(){
+  const p=document.getElementById('s-lps-reinf');p.appendChild(bk('s-lps'));
+  loops.filter(l=>l.type==='R'&&!l.forYou).forEach(l=>{p.appendChild(mkCrd(l.label,null,'#ef4444','<div class="val">'+l.desc+'</div>'));});
+})();
+
+// --- LOOPS > BALANCING ---
+(function(){
+  const p=document.getElementById('s-lps-bal');p.appendChild(bk('s-lps'));
+  loops.filter(l=>l.type==='B').forEach(l=>{p.appendChild(mkCrd(l.label,null,'#a78bfa','<div class="val">'+l.desc+'</div>'));});
+})();
+
+// --- LOOPS > EXIT ---
+(function(){
+  const p=document.getElementById('s-lps-exit');p.appendChild(bk('s-lps'));
+  loops.filter(l=>l.forYou).forEach(l=>{p.appendChild(mkAlert('#10b981','<strong>'+l.label+'</strong><br>'+l.desc));});
+})();
+
+// --- PLAN (branch) ---
+(function(){
+  const p=document.getElementById('s-pln');p.appendChild(bk());
+  [
+    {id:'s-pln-phases',ico:'\u25B6',nm:'Phases',ds:phases.length+' phases from this week to freedom'},
+    {id:'s-pln-lev',ico:'\u2691',nm:'Leverage points',ds:leverage.length+' structural moves'},
+    {id:'s-pln-fail',ico:'\u26A0',nm:'Failure points',ds:failurePoints.length+' risks ranked'},
+    {id:'s-pln-tasks',ico:'\u2713',nm:'Tasks',ds:'Checkable task list across all phases'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #10b981';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- PLAN > PHASES ---
+(function(){
+  const p=document.getElementById('s-pln-phases');p.appendChild(bk('s-pln'));
+  phases.forEach(ph=>{
+    let body='';ph.items.forEach(item=>{body+='<div style="padding:3px 0 3px 10px;border-left:2px solid '+ph.color+';margin-bottom:3px;font-size:11px;color:#94a3b8">'+item+'</div>';});
+    p.appendChild(mkCrd(ph.label,null,ph.color,body));
+  });
+})();
+
+// --- PLAN > LEVERAGE ---
+(function(){
+  const p=document.getElementById('s-pln-lev');p.appendChild(bk('s-pln'));
+  leverage.forEach(l=>{p.appendChild(mkCrd(l.title,l.pri,l.color,'<div class="val">'+l.desc+'</div>'));});
+})();
+
+// --- PLAN > FAILURE ---
+(function(){
+  const p=document.getElementById('s-pln-fail');p.appendChild(bk('s-pln'));
+  failurePoints.forEach(f=>{
+    let body='<div class="lbl" style="color:#ef4444">PROB: '+f.prob+' \u00b7 IMPACT: '+f.dest+'</div><div class="val">'+f.desc+'</div>';
+    body+='<div class="lbl" style="color:#10b981;margin-top:6px">MITIGATION</div><div class="val">'+f.mitigation+'</div>';
+    p.appendChild(mkCrd('#'+f.rank+' '+f.title,null,f.color,body));
+  });
+})();
+
+// --- PLAN > TASKS (branch) ---
+(function(){
+  const p=document.getElementById('s-pln-tasks');p.appendChild(bk('s-pln'));
+  [
+    {id:'s-pln-tasks-now',nm:'This week + May',ds:'AD, equipment, foundation',phases:[0,1]},
+    {id:'s-pln-tasks-build',nm:'Jun \u2014 Oct',ds:'Build, solidify, prepare exit',phases:[2,3,4]},
+    {id:'s-pln-tasks-exit',nm:'November 1 \u2014 Exit',ds:'Leave. Execute.',phases:[5]},
+    {id:'s-pln-tasks-post',nm:'Post-exit',ds:'Stabilize, demonstrate, free',phases:[6,7,8]},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #10b981';
+    btn.innerHTML='<div class="eico">\u2713</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);btn.dataset.phases=JSON.stringify(item.phases);p.appendChild(btn);
+  });
+})();
+
+// Task sub-screens — each phase as expandable card with tasks inside
+(function(){
+  const taskKey='sysmap_tasks';
+  let taskState=JSON.parse(localStorage.getItem(taskKey)||'{}');
+  const groups=[
+    {id:'s-pln-tasks-now',phases:[0,1]},
+    {id:'s-pln-tasks-build',phases:[2,3,4]},
+    {id:'s-pln-tasks-exit',phases:[5]},
+    {id:'s-pln-tasks-post',phases:[6,7,8]},
+  ];
+  groups.forEach(g=>{
+    const p=document.getElementById(g.id);p.appendChild(bk('s-pln-tasks'));
+    g.phases.forEach(pi=>{
+      if(pi>=phases.length)return;
+      const ph=phases[pi];
+      // Build task HTML for inside the card
+      let taskHTML='';
+      ph.items.forEach((item,i)=>{
+        const tid=ph.label.substring(0,8).replace(/\s/g,'')+'-'+i;
+        const done=taskState[tid]||false;
+        taskHTML+='<div class="task'+(done?' done':'')+'" data-tid="'+tid+'" style="margin-bottom:4px"><div class="chkb">'+(done?'\u2713':'')+'</div><div class="task-tx">'+item+'</div></div>';
+      });
+      const crd=mkCrd(ph.label,ph.items.length+' tasks',ph.color,taskHTML);
+      // Single phase in exit group - auto expand
+      if(g.phases.length===1)crd.classList.add('open');
+      // Wire up task clicks inside card
+      crd.querySelectorAll('.task').forEach(t=>{
+        t.onclick=function(e){
+          e.stopPropagation();
+          const nd=!t.classList.contains('done');
+          t.classList.toggle('done',nd);
+          t.querySelector('.chkb').textContent=nd?'\u2713':'';
+          taskState[t.dataset.tid]=nd;
+          localStorage.setItem(taskKey,JSON.stringify(taskState));
+        };
+      });
+      p.appendChild(crd);
+    });
+  });
+})();
+
+
+// --- SYSTEM > DIAGRAM ---
+(function(){
+  const p=document.getElementById('s-sys-dia');p.appendChild(bk('s-sys'));
+  
+  p.appendChild(el('div',{style:{display:'flex',gap:'10px',marginBottom:'6px'}},[
+    nodeCard('\ud83d\udcb0','Mom','1w2',C.green,'Pretends to see / Looks down. Never resolved fights.'),
+    nodeCard('\ud83c\udfe0','Grandma','2w3',C.purple,'Service as survival. Harmful when threatened. Needs everyone home.'),
+  ]));
+  p.appendChild(arrowBlock('Grandma','Mom','Refuses service / performed possession',C.red,true));
+  p.appendChild(arrowBlock('Mom','Grandma','Service / silent pride triggers resentment / Controls grandma through sister and you',C.red,true));
+  
+  p.appendChild(el('div',{style:{background:'#111827',border:'2px solid '+C.accent,borderRadius:'12px',padding:'16px',textAlign:'center',margin:'8px 0'}},[
+    el('div',{style:{fontSize:'28px',marginBottom:'4px'}},'\ud83c\udfdb\ufe0f'),
+    el('div',{style:{fontSize:'18px',fontWeight:'600',color:C.accent}},'You'),
+    el('div',{style:{fontSize:'11px',color:'#7d8590',fontFamily:'monospace',marginBottom:'6px'}},'4w5 \u00b7 INFJ \u00b7 Exit: Nov 1, 2026'),
+    el('div',{style:{fontSize:'12px',color:'#94a3b8',lineHeight:'1.4'}},'Center node. High leverage, framed as unstable.'),
+  ]));
+  
+  p.appendChild(arrowBlock('You','Mom','Regulation',C.green,false));
+  p.appendChild(arrowBlock('Mom','You','Pretends to see / Uses you to manage grandmother and sister / Transactional',C.red,true));
+  p.appendChild(arrowBlock('You','Grandma','Health & Admin',C.purple,false));
+  p.appendChild(arrowBlock('Grandma','You','Service (transactional) / Infantilises',C.purple,true));
+  p.appendChild(arrowBlock('You','Sister','Housing / Counter-narrative / Protected from rehab',C.accent,true));
+  p.appendChild(arrowBlock('Sister','You','Narrative architect / Poisons network / Instability frame',C.red,true));
+  p.appendChild(arrowBlock('Sister','Mom','Feeds instability frame',C.red,true));
+  p.appendChild(arrowBlock('Mom','Sister','Enables / Never resolved fights / Uses sister to control grandmother and you',C.red,true));
+  
+  p.appendChild(el('div',{style:{display:'flex',gap:'10px',margin:'8px 0'}},[
+    nodeCard('\u26a1','Sister','6w7',C.red,'Narrative architect. Controls what everyone thinks.'),
+    nodeCard('\ud83c\udf31','Niece','',C.blue,'Her parents\u2019 responsibility.'),
+  ]));
+  
+  p.appendChild(arrowBlock('Sister','Niece','Abuse / Parentification',C.red,true));
+  p.appendChild(arrowBlock('You','Niece','Protection (blocked)',C.blue,true));
+  p.appendChild(arrowBlock('Grandma','Sister','Both drive out people independently',C.purple,true));
+  
+  p.appendChild(el('div',{style:{height:'1px',background:'#1e293b',margin:'16px 0'}}));
+  
+  p.appendChild(el('div',{style:{background:'#83184340',border:'1px solid '+C.pink,borderRadius:'10px',padding:'12px 16px',textAlign:'center'}},[
+    el('div',{style:{fontSize:'10px',fontWeight:'700',letterSpacing:'2px',color:C.pink,marginBottom:'6px'}},'INSTABILITY FRAME'),
+    el('div',{style:{fontSize:'12px',color:'#94a3b8',lineHeight:'1.5'}},'Mom pretends to see while looking down. Sister is the active narrative architect. Grandmother service is the chain. Your 4 episodes weaponised. The instability frame may partly exist to discredit something that threatens both mom and sister.'),
+  ]));
+  
+  p.appendChild(el('div',{style:{display:'flex',gap:'16px',justifyContent:'center',marginTop:'14px',flexWrap:'wrap'}},[
+    el('div',{style:{display:'flex',alignItems:'center',gap:'6px'}},[el('div',{style:{width:'24px',height:'0',borderTop:'2px solid '+C.green}}),el('span',{style:{fontSize:'10px',color:'#94a3b8',fontFamily:'monospace'}},'Support')]),
+    el('div',{style:{display:'flex',alignItems:'center',gap:'6px'}},[el('div',{style:{width:'24px',height:'0',borderTop:'2px dashed '+C.red}}),el('span',{style:{fontSize:'10px',color:'#94a3b8',fontFamily:'monospace'}},'Harm')]),
+  ]));
+})();
+
+// --- NON-NEGOTIABLE (branch) ---
+(function(){
+  const p=document.getElementById('s-rul');p.appendChild(bk());
+  [
+    {id:'s-rul-rules',ico:'\u26D4',nm:'Rules',ds:myHistory.nonNegotiable.items.length+' non-negotiable rules'},
+    {id:'s-rul-susp',ico:'\u2026',nm:'Suspicions',ds:'Held lightly, not pursued'},
+  ].forEach(item=>{
+    const btn=document.createElement('div');btn.className='ebtn';btn.style.borderLeft='3px solid #ef4444';
+    btn.innerHTML='<div class="eico">'+item.ico+'</div><div><div class="enm">'+item.nm+'</div><div class="eds">'+item.ds+'</div></div>';
+    btn.onclick=()=>go(item.id);p.appendChild(btn);
+  });
+})();
+
+// --- RULES > RULES ---
+(function(){
+  const p=document.getElementById('s-rul-rules');p.appendChild(bk('s-rul'));
+  myHistory.nonNegotiable.items.forEach(rule=>{
+    const d=document.createElement('div');d.style.cssText='padding:4px 0 4px 12px;border-left:2px solid #ef4444;margin-bottom:5px;font-size:12px;color:#94a3b8;line-height:1.5';d.textContent=rule;p.appendChild(d);
+  });
+})();
+
+// --- RULES > SUSPICIONS ---
+(function(){
+  const p=document.getElementById('s-rul-susp');p.appendChild(bk('s-rul'));
+  myHistory.suspicions.items.forEach(item=>{p.appendChild(mkCrd(item.label,null,item.color,'<div class="val">'+item.text+'</div>'));});
+  const ft=document.createElement('div');ft.className='alert-box';ft.style.cssText='background:#78350f40;border:1px solid #f59e0b;color:#f59e0b;margin-top:8px';ft.textContent=myHistory.suspicions.footer;p.appendChild(ft);
+})();
+
+</script>
+</body>
+</html>
